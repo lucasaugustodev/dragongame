@@ -1,0 +1,1172 @@
+:root {
+  --gold: #f7c24f;
+  --gold-soft: #ffe5a2;
+  --amber: #c57519;
+  --green: #58d038;
+  --blue: #84b8ff;
+  --red: #ff4b36;
+  --ink: #070605;
+  --panel: rgba(9, 8, 7, 0.78);
+  --line: rgba(247, 194, 79, 0.42);
+  --text: #f8ecd2;
+  --muted: #bba98c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #050403;
+  color: var(--text);
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+button {
+  font: inherit;
+}
+
+.game-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.76)),
+    #050403;
+}
+
+.topbar,
+.statusbar {
+  width: min(1480px, calc(100vw - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  position: relative;
+  z-index: 4;
+}
+
+.topbar {
+  padding: 18px 0 10px;
+}
+
+.topbar h1,
+.topbar p,
+.statusbar p {
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font-size: clamp(1rem, 2vw, 1.6rem);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.topbar h1 {
+  margin-top: 4px;
+  color: #f3e8d5;
+  font-size: clamp(0.9rem, 1.6vw, 1.3rem);
+  text-transform: uppercase;
+}
+
+.balance-panel,
+.multiplier-panel,
+.loot-panel,
+.bet-panel,
+.timer-panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 0 26px rgba(0, 0, 0, 0.44), inset 0 0 24px rgba(247, 194, 79, 0.06);
+}
+
+.balance-panel {
+  min-width: 250px;
+  padding: 14px 20px;
+  text-align: right;
+}
+
+.balance-panel span,
+.multiplier-panel span,
+.loot-panel span,
+.bet-panel span,
+.timer-panel span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.balance-panel strong,
+.loot-panel strong,
+.timer-panel strong {
+  display: block;
+  color: #fff6e6;
+  font-size: clamp(1.3rem, 2vw, 2rem);
+}
+
+.stage {
+  width: min(1480px, calc(100vw - 32px));
+  min-height: 720px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(247, 194, 79, 0.28);
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.66)),
+    url("assets/processed/cave-background.png");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.52);
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 68%, rgba(255, 183, 46, 0.18), transparent 22%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.5), transparent 34%, rgba(0, 0, 0, 0.42));
+}
+
+.dragon-video,
+.thief-video,
+.dragon-sprite,
+.thief-sprite,
+.chest-sprite {
+  position: absolute;
+  z-index: 1;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 28px 26px rgba(0, 0, 0, 0.72));
+}
+
+.dragon-video {
+  right: -31%;
+  bottom: 28%;
+  width: min(120vw, 540px);
+  height: auto;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  filter: drop-shadow(0 28px 26px rgba(0, 0, 0, 0.72));
+}
+
+.thief-video {
+  left: 7%;
+  bottom: 15%;
+  width: clamp(230px, 25vw, 395px);
+  height: auto;
+  opacity: 0;
+  transition: opacity 180ms ease, left 180ms ease, bottom 180ms ease;
+}
+
+.stage.use-dragon-video .dragon-video,
+.stage.use-thief-video .thief-video {
+  opacity: 0.96;
+}
+
+.stage.use-dragon-video .dragon-sprite,
+.stage.use-thief-video .thief-sprite {
+  opacity: 0;
+}
+
+.stage.ready .thief-sprite {
+  opacity: 0;
+}
+
+.stage.firing .dragon-video {
+  left: -28%;
+  right: auto;
+  bottom: 53%;
+  z-index: 2;
+  width: min(176vw, 760px);
+  transform: none;
+}
+
+.stage.ready .thief-video,
+.stage.stealing .thief-video,
+.stage.firing .thief-video,
+.stage.caught .thief-video,
+.stage.result-loss .thief-video {
+  left: 50%;
+  bottom: 25%;
+  width: min(150vw, 650px);
+  transform: translateX(-50%);
+}
+
+.stage.firing .thief-video,
+.stage.caught .thief-video,
+.stage.result-loss .thief-video {
+  z-index: 1;
+}
+
+.stage.ready .chest-sprite,
+.stage.stealing .chest-sprite,
+.stage.firing .chest-sprite,
+.stage.caught .chest-sprite,
+.stage.result-loss .chest-sprite {
+  opacity: 0;
+}
+
+.stage.firing .multiplier-panel,
+.stage.firing .loot-panel,
+.stage.firing .controls,
+.stage.firing .risk-wrap,
+.stage.caught .multiplier-panel,
+.stage.caught .loot-panel,
+.stage.caught .controls,
+.stage.caught .risk-wrap {
+  display: none;
+}
+
+.dragon-sprite {
+  right: 1%;
+  bottom: 20%;
+  width: clamp(390px, 43vw, 720px);
+  opacity: 0.94;
+  transform-origin: 70% 60%;
+  transition: transform 220ms ease, opacity 220ms ease, right 220ms ease, bottom 220ms ease;
+}
+
+.thief-sprite {
+  left: 7%;
+  bottom: 15%;
+  width: clamp(230px, 25vw, 395px);
+  transition: transform 180ms ease, left 180ms ease, bottom 180ms ease;
+}
+
+.chest-sprite {
+  left: 36%;
+  bottom: 12%;
+  width: clamp(190px, 19vw, 290px);
+}
+
+.stage.stealing .thief-sprite {
+  animation: reach 700ms ease-in-out infinite alternate;
+}
+
+.stage.stealing .dragon-sprite {
+  animation: sleepBreath 2200ms ease-in-out infinite;
+}
+
+.stage.escape .dragon-sprite {
+  left: -5%;
+  right: auto;
+  bottom: 12%;
+  width: clamp(430px, 54vw, 840px);
+  opacity: 1;
+  animation: attackPulse 520ms ease-in-out infinite alternate;
+}
+
+  .stage.escape .thief-sprite {
+    left: 38%;
+    bottom: 5%;
+    width: clamp(170px, 17vw, 270px);
+    transform: translateX(-50%);
+  }
+
+  .stage.escape .thief-video {
+    left: 38%;
+    bottom: 5%;
+    width: clamp(170px, 17vw, 270px);
+    transform: translateX(-50%);
+  }
+
+.stage.escape .multiplier-panel,
+.stage.escape .loot-panel,
+.stage.escape .controls,
+.stage.escape .risk-wrap {
+  display: none;
+}
+
+.stage.result-win .dragon-sprite,
+.stage.result-cashout .dragon-sprite {
+  opacity: 0.62;
+}
+
+.stage.result-loss .dragon-sprite {
+  left: -3%;
+  right: auto;
+  bottom: 10%;
+  width: clamp(420px, 52vw, 820px);
+}
+
+.multiplier-panel {
+  position: absolute;
+  left: 28px;
+  top: 28px;
+  z-index: 3;
+  min-width: 230px;
+  padding: 16px 20px 18px;
+}
+
+.multiplier-panel strong {
+  display: block;
+  color: var(--gold);
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  line-height: 0.95;
+}
+
+.loot-panel {
+  position: absolute;
+  left: 50%;
+  bottom: 120px;
+  z-index: 3;
+  min-width: 320px;
+  padding: 16px 24px;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.controls {
+  position: absolute;
+  right: 28px;
+  top: 122px;
+  z-index: 3;
+  width: min(320px, calc(100% - 56px));
+  display: grid;
+  gap: 12px;
+}
+
+.bet-panel {
+  padding: 12px;
+}
+
+.bet-row {
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+  gap: 10px;
+}
+
+.bet-row strong {
+  color: var(--gold-soft);
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.icon-button {
+  width: 42px;
+  height: 38px;
+  border: 1px solid rgba(247, 194, 79, 0.42);
+  background: rgba(13, 11, 8, 0.9);
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.icon-button:disabled {
+  color: #766650;
+  cursor: not-allowed;
+}
+
+.game-button {
+  min-height: 78px;
+  border: 0;
+  color: #fff7de;
+  background-color: rgba(9, 8, 7, 0.9);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: grid;
+  place-items: center;
+  padding: 14px 24px;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.72);
+  transition: transform 130ms ease, filter 130ms ease, opacity 130ms ease;
+}
+
+.game-button span {
+  display: block;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  font-weight: 900;
+}
+
+.game-button small {
+  display: block;
+  color: #d9ffc8;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.game-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.game-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.game-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.75) brightness(0.62);
+  opacity: 0.72;
+}
+
+.game-button-green {
+  background-image: url("assets/sprites/ui-button-green.png");
+}
+
+.game-button-amber {
+  background-image: url("assets/sprites/ui-button-amber.png");
+}
+
+.game-button-red {
+  background-image: url("assets/sprites/ui-button-red.png");
+}
+
+.game-button-amber small {
+  color: #ffe0a0;
+}
+
+.risk-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 3;
+  width: min(900px, calc(100% - 88px));
+  height: 68px;
+  transform: translateX(-50%);
+}
+
+.risk-track {
+  position: absolute;
+  left: 0;
+  right: 58px;
+  top: 16px;
+  height: 34px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(247, 194, 79, 0.36);
+  background: rgba(7, 6, 5, 0.82);
+}
+
+.risk-segment {
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.68);
+}
+
+.risk-segment.active.safe {
+  background: linear-gradient(180deg, #22db24, #087e16);
+}
+
+.risk-segment.active.warn {
+  background: linear-gradient(180deg, #ffd34a, #a66c00);
+}
+
+.risk-segment.active.danger {
+  background: linear-gradient(180deg, #ff5b2e, #a40707);
+}
+
+.risk-eye {
+  position: absolute;
+  right: -8px;
+  top: -4px;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px rgba(255, 65, 32, 0.7));
+}
+
+.escape-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  padding: 30px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  align-items: center;
+  justify-items: center;
+  background: linear-gradient(90deg, rgba(6, 3, 2, 0.75), rgba(6, 3, 2, 0.38));
+}
+
+.escape-copy {
+  justify-self: start;
+  max-width: min(520px, 100%);
+}
+
+.danger-title {
+  margin: 0 0 8px;
+  color: var(--red);
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.escape-copy h2 {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  text-transform: uppercase;
+}
+
+.timer-panel {
+  min-width: 230px;
+  padding: 12px 18px;
+  text-align: center;
+  border-color: rgba(255, 75, 54, 0.58);
+  background: rgba(16, 4, 3, 0.84);
+}
+
+.timer-panel strong {
+  color: var(--red);
+  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  line-height: 0.95;
+}
+
+.portal-grid {
+  width: min(780px, 100%);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 18px;
+}
+
+.portal-choice {
+  border: 1px solid rgba(247, 194, 79, 0.36);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  min-height: 240px;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  padding: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.portal-choice img {
+  width: min(260px, 100%);
+  height: 190px;
+  object-fit: contain;
+  transition: transform 130ms ease;
+}
+
+.portal-choice span {
+  font-weight: 900;
+  color: var(--gold-soft);
+}
+
+.portal-choice:hover img {
+  transform: translateY(-4px);
+}
+
+.or-label {
+  color: var(--gold);
+  align-self: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.escape-note {
+  margin: 0;
+  color: #c98554;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.result-panel {
+  position: absolute;
+  right: 28px;
+  bottom: 106px;
+  z-index: 6;
+  width: min(440px, calc(100% - 56px));
+  padding: 26px;
+  text-align: center;
+  border: 1px solid rgba(247, 194, 79, 0.42);
+  background: rgba(7, 6, 5, 0.9);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.62);
+}
+
+.result-panel p {
+  margin: 0 0 12px;
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.result-panel strong {
+  display: block;
+  color: var(--gold);
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.result-panel span {
+  display: block;
+  margin: 6px 0 18px;
+  color: var(--muted);
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.result-panel .game-button {
+  width: 100%;
+}
+
+.stage.result-win .result-panel,
+.stage.result-cashout .result-panel {
+  border-color: rgba(88, 208, 56, 0.62);
+  box-shadow: 0 0 44px rgba(52, 174, 35, 0.22), 0 18px 42px rgba(0, 0, 0, 0.62);
+}
+
+.stage.result-win #resultTitle,
+.stage.result-cashout #resultTitle {
+  color: var(--green);
+}
+
+.stage.result-loss .result-panel {
+  border-color: rgba(255, 75, 54, 0.62);
+  box-shadow: 0 0 44px rgba(255, 75, 54, 0.18), 0 18px 42px rgba(0, 0, 0, 0.62);
+}
+
+.stage.result-loss #resultTitle,
+.stage.result-loss #resultAmount {
+  color: var(--red);
+}
+
+.statusbar {
+  padding: 12px 0 18px;
+}
+
+.statusbar p {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.statusbar button {
+  border: 1px solid rgba(247, 194, 79, 0.36);
+  background: rgba(7, 6, 5, 0.78);
+  color: var(--gold-soft);
+  min-height: 38px;
+  padding: 0 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+@keyframes sleepBreath {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(5px) scale(1.01);
+  }
+}
+
+@keyframes reach {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes attackPulse {
+  from {
+    transform: translateX(0) scale(1);
+  }
+  to {
+    transform: translateX(14px) scale(1.02);
+  }
+}
+
+@media (max-width: 920px) {
+  .topbar,
+  .statusbar {
+    width: min(100vw - 20px, 760px);
+  }
+
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .balance-panel {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .stage {
+    width: min(100vw - 20px, 760px);
+    min-height: 760px;
+  }
+
+  .multiplier-panel {
+    left: 14px;
+    top: 14px;
+    min-width: 190px;
+  }
+
+  .controls {
+    left: 14px;
+    right: 14px;
+    top: auto;
+    bottom: 104px;
+    width: auto;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bet-panel {
+    grid-column: 1 / -1;
+  }
+
+  .dragon-sprite {
+    right: -18%;
+    bottom: 38%;
+    width: 620px;
+  }
+
+  .thief-sprite {
+    left: 4%;
+    bottom: 29%;
+    width: 260px;
+  }
+
+  .thief-video {
+    left: 4%;
+    bottom: 29%;
+    width: 260px;
+  }
+
+  .chest-sprite {
+    left: 34%;
+    bottom: 26%;
+    width: 210px;
+  }
+
+  .loot-panel {
+    bottom: 306px;
+    min-width: 250px;
+  }
+
+  .risk-wrap {
+    width: calc(100% - 28px);
+    bottom: 18px;
+  }
+
+  .stage.escape .dragon-sprite {
+    left: -32%;
+    bottom: 34%;
+    width: 720px;
+  }
+
+  .stage.escape .thief-sprite {
+    left: 52%;
+    bottom: 30%;
+  }
+
+  .stage.escape .thief-video {
+    left: 52%;
+    bottom: 30%;
+  }
+
+  .escape-panel {
+    padding: 18px;
+    grid-template-rows: auto auto auto auto;
+  }
+
+  .portal-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .or-label {
+    display: none;
+  }
+
+  .portal-choice {
+    min-height: 210px;
+  }
+
+  .result-panel {
+    right: 14px;
+    bottom: 104px;
+  }
+}
+
+@media (max-width: 560px) {
+  .stage {
+    min-height: 720px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .game-button {
+    min-height: 66px;
+  }
+
+  .dragon-sprite {
+    right: -55%;
+    bottom: 42%;
+    width: 560px;
+  }
+
+  .thief-sprite {
+    width: 220px;
+  }
+
+  .chest-sprite {
+    left: 44%;
+    width: 175px;
+  }
+
+  .loot-panel {
+    left: 14px;
+    bottom: 320px;
+    min-width: 0;
+    width: calc(100% - 28px);
+    transform: none;
+  }
+
+  .portal-grid {
+    gap: 10px;
+  }
+
+  .portal-choice {
+    min-height: 178px;
+    padding: 8px;
+  }
+
+  .portal-choice img {
+    height: 140px;
+  }
+
+  .risk-track {
+    right: 48px;
+  }
+
+  .risk-eye {
+    width: 64px;
+    height: 64px;
+    top: 2px;
+  }
+}
+
+/* Mobile portrait is the only game format; desktop shows the same vertical frame. */
+@media (min-width: 0px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+  }
+
+  .game-shell {
+    width: min(100vw, 430px);
+    height: 100dvh;
+    min-height: 660px;
+    margin: 0 auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+    border-left: 1px solid rgba(247, 194, 79, 0.18);
+    border-right: 1px solid rgba(247, 194, 79, 0.18);
+  }
+
+  .topbar,
+  .statusbar {
+    width: calc(100% - 16px);
+    gap: 8px;
+  }
+
+  .topbar {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 0 6px;
+  }
+
+  .eyebrow {
+    font-size: 1.05rem;
+    line-height: 1.05;
+  }
+
+  .topbar h1 {
+    margin-top: 2px;
+    font-size: 0.76rem;
+    line-height: 1.1;
+  }
+
+  .balance-panel {
+    min-width: 132px;
+    padding: 9px 10px;
+    text-align: right;
+  }
+
+  .balance-panel span {
+    font-size: 0.64rem;
+  }
+
+  .balance-panel strong {
+    font-size: 1rem;
+    line-height: 1.15;
+  }
+
+  .stage {
+    width: calc(100% - 12px);
+    height: 100%;
+    min-height: 0;
+    margin: 0 6px;
+    background-position: 48% center;
+  }
+
+  .stage::after {
+    background:
+      radial-gradient(circle at 48% 58%, rgba(255, 183, 46, 0.19), transparent 24%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 30%, rgba(0, 0, 0, 0.74));
+  }
+
+  .multiplier-panel {
+    left: 10px;
+    top: 10px;
+    min-width: 144px;
+    padding: 10px 12px;
+  }
+
+  .multiplier-panel span,
+  .loot-panel span,
+  .bet-panel span {
+    font-size: 0.64rem;
+  }
+
+  .multiplier-panel strong {
+    font-size: 2.35rem;
+  }
+
+  .dragon-sprite {
+    right: -34%;
+    bottom: 42%;
+    width: min(122vw, 520px);
+  }
+
+  .dragon-video {
+    right: -12%;
+    bottom: 43%;
+    width: min(92vw, 390px);
+  }
+
+  .thief-sprite {
+    left: 4%;
+    bottom: 30%;
+    width: min(58vw, 245px);
+  }
+
+  .thief-video {
+    left: 4%;
+    bottom: 30%;
+    width: min(58vw, 245px);
+  }
+
+  .chest-sprite {
+    left: 43%;
+    bottom: 30%;
+    width: min(44vw, 190px);
+  }
+
+  .loot-panel {
+    left: 10px;
+    right: 10px;
+    bottom: 244px;
+    width: auto;
+    min-width: 0;
+    padding: 10px 12px;
+    transform: none;
+  }
+
+  .loot-panel strong {
+    font-size: 1.6rem;
+    line-height: 1.1;
+  }
+
+  .controls {
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 70px;
+    width: auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .bet-panel {
+    grid-column: 1 / -1;
+    padding: 8px 10px;
+  }
+
+  .bet-row {
+    min-height: 34px;
+    grid-template-columns: 38px 1fr 38px;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 32px;
+  }
+
+  .game-button {
+    min-height: 64px;
+    padding: 9px 12px;
+  }
+
+  .game-button span {
+    font-size: 0.98rem;
+  }
+
+  .game-button small {
+    font-size: 0.72rem;
+  }
+
+  .risk-wrap {
+    width: calc(100% - 20px);
+    height: 56px;
+    bottom: 8px;
+  }
+
+  .risk-track {
+    right: 46px;
+    top: 14px;
+    height: 28px;
+    gap: 3px;
+    padding: 5px;
+  }
+
+  .risk-eye {
+    width: 60px;
+    height: 60px;
+    right: -8px;
+    top: -2px;
+  }
+
+  .escape-panel {
+    padding: 14px 12px;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    background: linear-gradient(180deg, rgba(6, 3, 2, 0.82), rgba(6, 3, 2, 0.5));
+  }
+
+  .escape-copy {
+    justify-self: stretch;
+    text-align: left;
+  }
+
+  .danger-title {
+    font-size: 1.26rem;
+  }
+
+  .escape-copy h2 {
+    font-size: 0.96rem;
+  }
+
+  .timer-panel {
+    min-width: 184px;
+    padding: 9px 12px;
+  }
+
+  .timer-panel strong {
+    font-size: 2.6rem;
+  }
+
+  .portal-grid {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    align-items: end;
+  }
+
+  .or-label {
+    display: none;
+  }
+
+  .portal-choice {
+    min-height: 220px;
+    padding: 8px;
+  }
+
+  .portal-choice img {
+    width: 100%;
+    height: 160px;
+  }
+
+  .portal-choice span {
+    font-size: 0.9rem;
+    line-height: 1.15;
+  }
+
+  .escape-note {
+    font-size: 0.78rem;
+    text-align: center;
+  }
+
+  .stage.escape .dragon-sprite,
+  .stage.result-loss .dragon-sprite {
+    left: -52%;
+    right: auto;
+    bottom: 42%;
+    width: min(138vw, 590px);
+  }
+
+  .stage.escape .thief-sprite {
+    left: 57%;
+    bottom: 33%;
+    width: min(44vw, 190px);
+  }
+
+  .stage.escape .thief-video {
+    left: 57%;
+    bottom: 33%;
+    width: min(44vw, 190px);
+  }
+
+  .result-panel {
+    left: 12px;
+    right: 12px;
+    bottom: 70px;
+    width: auto;
+    padding: 18px;
+  }
+
+  .result-panel p {
+    font-size: 1.28rem;
+  }
+
+  .result-panel strong {
+    font-size: 2.3rem;
+  }
+
+  .statusbar {
+    padding: 6px 0 8px;
+  }
+
+  .statusbar p {
+    font-size: 0.72rem;
+    line-height: 1.15;
+  }
+
+  .statusbar button {
+    min-height: 32px;
+    padding: 0 9px;
+    font-size: 0.68rem;
+  }
+}

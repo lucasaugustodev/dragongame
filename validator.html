@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dragon Animation Validator</title>
+    <link rel="stylesheet" href="validator.css">
+  </head>
+  <body>
+    <main class="lab">
+      <section class="preview" id="preview">
+        <div class="stage" id="stage">
+          <video class="actor dragon" id="dragonVideo" muted playsinline preload="auto"></video>
+          <video class="actor thief" id="thiefVideo" muted playsinline preload="auto"></video>
+          <img class="prop chest" src="assets/sprites/prop-open-chest.png" alt="">
+          <div class="phase-tag" id="phaseTag">PRE-ROUBO</div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="group">
+          <label for="preSelect">Pre-roubo</label>
+          <select id="preSelect"></select>
+        </div>
+
+        <div class="group">
+          <label for="attackSelect">Ataque</label>
+          <select id="attackSelect"></select>
+        </div>
+
+        <div class="buttons">
+          <button id="preButton" type="button">Pre</button>
+          <button id="stealButton" type="button">Roubo</button>
+          <button id="attackButton" type="button">Ataque</button>
+          <button id="sequenceButton" type="button">Sequencia</button>
+        </div>
+
+        <div class="group grid">
+          <label for="preMs">Pre ms</label>
+          <input id="preMs" type="number" value="1600" min="300" max="6000" step="100">
+          <label for="stealMs">Roubo ms</label>
+          <input id="stealMs" type="number" value="1600" min="300" max="6000" step="100">
+          <label for="attackMs">Ataque ms</label>
+          <input id="attackMs" type="number" value="8000" min="1000" max="12000" step="100">
+        </div>
+
+        <div class="group">
+          <label for="bgMode">Fundo</label>
+          <select id="bgMode">
+            <option value="cave">Caverna</option>
+            <option value="checker">Alpha checker</option>
+            <option value="black">Preto</option>
+            <option value="white">Branco</option>
+          </select>
+        </div>
+
+        <div class="sliders">
+          <label>Jogador X <input id="thiefX" type="range" min="-25" max="45" value="4"></label>
+          <label>Jogador Y <input id="thiefY" type="range" min="18" max="58" value="30"></label>
+          <label>Jogador W <input id="thiefW" type="range" min="36" max="78" value="58"></label>
+          <label>Dragao X <input id="dragonX" type="range" min="-45" max="20" value="-12"></label>
+          <label>Dragao Y <input id="dragonY" type="range" min="20" max="62" value="43"></label>
+          <label>Dragao W <input id="dragonW" type="range" min="72" max="145" value="92"></label>
+        </div>
+
+        <pre id="status" aria-live="polite"></pre>
+      </aside>
+    </main>
+
+    <script src="validator.js"></script>
+  </body>
+</html>

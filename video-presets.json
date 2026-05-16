@@ -1,0 +1,47 @@
+{
+  "default_model": "Wan-AI/Wan2.2-I2V-A14B",
+  "output": {
+    "width": 720,
+    "height": 1280,
+    "duration_seconds": 4,
+    "fps": 24
+  },
+  "negative_prompt": "text, subtitles, watermark, logo, UI, buttons, broken anatomy, extra limbs, extra hands, duplicated character, cropped subject, blurry, low quality, camera cuts",
+  "presets": [
+    {
+      "id": "dragon_sleep_loop",
+      "first_frame": "assets/video-keyframes/dragon-sleep.png",
+      "prompt": "Vertical mobile game cinematic loop. A huge ancient red dragon sleeps curled around a glowing treasure hoard inside a dark fantasy cave. Slow breathing, tiny tail twitch, subtle wing movement, gold coins shimmer, warm orange cave light, no camera cut, seamless loop feeling."
+    },
+    {
+      "id": "steal_gold_loop",
+      "first_frame": "assets/video-keyframes/thief-steal.png",
+      "prompt": "Vertical mobile game cinematic loop. A hooded thief quietly steals gold from an open treasure chest while a red dragon sleeps behind him. Hands move carefully, coins sparkle, tense stealth mood, warm treasure glow, very stable composition, no camera cut."
+    },
+    {
+      "id": "dragon_wake",
+      "first_frame": "assets/video-keyframes/dragon-wake.png",
+      "prompt": "Vertical mobile game cinematic clip. The sleeping red dragon suddenly opens one glowing eye, raises its head, smoke leaves its nostrils, red light grows across the cave, gold coins tremble. Dramatic wake-up moment, stable mobile game framing."
+    },
+    {
+      "id": "dragon_attack",
+      "first_frame": "assets/video-keyframes/dragon-attack.png",
+      "prompt": "Vertical mobile game cinematic clip. A massive red dragon lunges forward and roars, fire glow builds in its mouth, the camera shakes slightly, embers fly, the cave turns red-orange. Intense danger moment, no text, no UI."
+    },
+    {
+      "id": "escape_choice",
+      "first_frame": "assets/video-keyframes/escape-choice.png",
+      "prompt": "Vertical mobile game cinematic loop. Two ancient stone tunnel portals glow inside a dragon cave, the left portal glows green and the right portal glows blue. The light pulses, dust moves, treasure glints faintly, tense choice moment, stable framing."
+    },
+    {
+      "id": "win_escape",
+      "first_frame": "assets/video-keyframes/win-escape.png",
+      "prompt": "Vertical mobile game cinematic clip. A hooded thief escapes through a green glowing tunnel carrying a gold pouch. Warm gold particles trail behind him, the cave fades darker, victorious but still tense, stable mobile framing, no text."
+    },
+    {
+      "id": "loss_caught",
+      "first_frame": "assets/video-keyframes/loss-caught.png",
+      "prompt": "Vertical mobile game cinematic clip. The red dragon catches the thief in the cave, fiery red light fills the scene, coins scatter, the thief falls backward, dramatic defeat moment, no gore, no text, no UI."
+    }
+  ]
+}

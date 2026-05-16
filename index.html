@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dragon Gold Heist</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Dragon Gold Heist">
+      <section class="topbar" aria-label="Status da conta">
+        <div>
+          <p class="eyebrow" id="stepTitle">1. Roube o ouro</p>
+          <h1 id="stepSubtitle">O dragao esta dormindo...</h1>
+        </div>
+        <div class="balance-panel">
+          <span>Saldo</span>
+          <strong id="balanceValue">R$ 1.250,00</strong>
+        </div>
+      </section>
+
+      <section class="stage" id="stage" aria-label="Cena do jogo">
+        <video class="dragon-video" id="dragonVideo" muted playsinline preload="auto" hidden></video>
+        <video class="thief-video" id="thiefVideo" muted playsinline preload="auto" hidden></video>
+        <img class="dragon-sprite" id="dragonSprite" src="assets/sprites/clean/dragon-clean-sleep-wake-01.png" alt="">
+        <img class="thief-sprite" id="thiefSprite" src="assets/sprites/clean/thief-clean-steal-idle-01.png" alt="">
+        <img class="chest-sprite" src="assets/sprites/prop-open-chest.png" alt="">
+
+        <div class="multiplier-panel">
+          <span>Multiplicador</span>
+          <strong id="multiplierValue">1.00x</strong>
+        </div>
+
+        <div class="loot-panel">
+          <span>Ouro roubado</span>
+          <strong id="lootValue">R$ 0,00</strong>
+        </div>
+
+        <aside class="controls" aria-label="Controles da rodada">
+          <div class="bet-panel">
+            <span>Aposta</span>
+            <div class="bet-row">
+              <button class="icon-button" id="decreaseBet" type="button" aria-label="Diminuir aposta">-</button>
+              <strong id="betValue">R$ 100,00</strong>
+              <button class="icon-button" id="increaseBet" type="button" aria-label="Aumentar aposta">+</button>
+            </div>
+          </div>
+          <button class="game-button game-button-green" id="stealButton" type="button">
+            <span id="stealButtonLabel">Iniciar roubo</span>
+            <small id="nextMultiplierLabel">Proximo: +0.45x</small>
+          </button>
+          <button class="game-button game-button-amber" id="cashoutButton" type="button" disabled>
+            <span>Cash out</span>
+            <small id="cashoutValue">R$ 0,00</small>
+          </button>
+        </aside>
+
+        <div class="risk-wrap" aria-label="Risco do dragao acordar">
+          <div class="risk-track" id="riskTrack"></div>
+          <img class="risk-eye" src="assets/sprites/ui-dragon-eye.png" alt="">
+        </div>
+
+        <section class="result-panel" id="resultPanel" aria-live="polite" hidden>
+          <p id="resultTitle">Resultado</p>
+          <strong id="resultAmount">R$ 0,00</strong>
+          <span id="resultMeta">1.00x</span>
+          <button class="game-button game-button-green" id="playAgainButton" type="button">
+            <span>Jogar novamente</span>
+          </button>
+        </section>
+      </section>
+
+      <section class="statusbar" aria-live="polite">
+        <p id="statusText">Escolha uma aposta e inicie o roubo.</p>
+        <button id="resetButton" type="button">Resetar saldo</button>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>

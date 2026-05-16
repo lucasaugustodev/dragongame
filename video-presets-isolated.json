@@ -1,0 +1,102 @@
+{
+  "default_model": "Wan-AI/Wan2.2-I2V-A14B",
+  "output": {
+    "width": 720,
+    "height": 1280,
+    "duration_seconds": 3,
+    "fps": 24
+  },
+  "negative_prompt": "background scene, cave background, treasure room, extra characters, text, subtitles, watermark, logo, UI, buttons, broken anatomy, extra limbs, extra hands, duplicated character, cropped subject, blurry, low quality, camera cuts, changing background color",
+  "presets": [
+    {
+      "id": "dragon_sleep_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-sleep-isolated.png",
+      "prompt": "A single ancient red dragon sleeping curled up on a perfectly flat solid magenta background. Seamless looping animation: start and end in the exact same sleeping pose. Only the dragon moves: slow breathing, tiny tail twitch, subtle wing twitch, then it settles back to the first pose. Locked camera, no shadows on background, no cave, no floor, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "dragon_wake_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-wake-isolated.png",
+      "prompt": "A single ancient red dragon on a perfectly flat solid magenta background wakes up, opens glowing eyes, raises its head, smoke from nostrils. Locked camera, no shadows on background, no cave, no floor, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "dragon_wake_from_sleep_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-sleep-isolated.png",
+      "prompt": "A single ancient red dragon on a perfectly flat solid magenta background starts in the exact same curled sleeping pose, then wakes up naturally, opens glowing eyes, lifts its head and shoulders, and ends alert but not lunging yet. One continuous transition from sleeping to awake. Locked camera, no shadows on background, no cave, no floor, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "dragon_attack_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-attack-isolated.png",
+      "prompt": "A single ancient red dragon on a perfectly flat solid magenta background lunges and roars forward, claws flexing. Locked camera, no shadows on background, no cave, no floor, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "dragon_attack_from_wake_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-wake-isolated.png",
+      "prompt": "A single ancient red dragon on a perfectly flat solid magenta background starts alert with its head raised, then lunges downward toward the lower-left side as if attacking a thief, roaring with claws forward. One continuous attack motion, no return to sleep. Locked camera, no shadows on background, no cave, no floor, no extra character, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "dragon_fire_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-fire-isolated.png",
+      "prompt": "A single ancient red dragon on a perfectly flat solid magenta background breathes orange fire to the side. Locked camera, no shadows on background, no cave, no floor, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "dragon_fire_from_wake_alpha",
+      "first_frame": "assets/video-keyframes-isolated/dragon-wake-isolated.png",
+      "prompt": "A single ancient red dragon on a perfectly flat solid magenta background starts alert with head raised from a wake-up pose, inhales, leans toward the lower-left side, then breathes a powerful orange fire blast downward toward an unseen thief. One continuous motion from awake to fire attack, no return to sleep. Locked camera, no shadows on background, no cave, no floor, no extra character, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_steal_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief on a perfectly flat solid magenta background quietly stealing gold with careful hand movement. Seamless looping animation: start and end in the exact same crouched pose, hand returns naturally. Locked camera, no shadows on background, no cave, no props except tiny gold in hand or pouch, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_ready_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief on a perfectly flat solid magenta background crouched in the same pose as a stealing animation, waiting before the robbery starts. Seamless looping idle: subtle breathing, small shoulder movement, hand hovering near the pouch, then returning to the exact first pose. Locked camera, no shadows on background, no cave, no props except a tiny hint of gold in hand or pouch, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background, before stealing. The body stays almost locked in the same crouched pose that begins the stealing animation. He quietly studies the chest, glances left and right, checks around, and slowly brings the hand back near the chest in the exact first-frame pose so it matches the stealing loop. Seamless looping idle with very small head, shoulder, and hand movement only. No walking, no taking gold yet, no extra hands, no extra limbs, no background, no shadows on background, no cave, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_watch_36_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background. Pre-robbery scouting animation, not stealing yet. Body locked in the same crouched pose as the first frame of the stealing animation, one hand close to the chest but not taking gold. He only turns his hooded head slightly left, then right, studying the chest and checking around, then returns to the exact first-frame pose. Very small movement, no walking, no opening or closing the chest, no coins moving, no taking gold, no extra hands, no extra limbs. Locked camera, no background, no shadows on background, no cave, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_watch_36b_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background. Pre-robbery scouting idle, not stealing. Keep the body, feet, pouch, chest, and hand position almost frozen so it matches the first frame of the stealing loop. The thief slowly looks at the chest, glances over the left shoulder, then returns to the exact first pose. Tiny head and shoulder movement only. No walking, no grabbing, no moving coins, no extra hands, no extra limbs, no background, no cave, no shadows on background, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_watch_36c_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background. Pre-robbery scouting idle, not stealing yet. The thief studies the chest and cautiously turns the hooded head right then back down toward the chest. Keep the torso and knees locked, one hand hovering near the chest but not taking gold, ending exactly in the same first-frame crouch used by the stealing animation. No walking, no opening or closing chest, no coins moving, no extra hands, no extra limbs. Locked camera, no background, no cave, no shadows on background, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_watch_36d_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background. Before stealing, the thief pauses and analyzes the chest. Very subtle animation: breathing, small hood tilt, hand hovering near the lock, then returns to the exact same first-frame pose that begins the stealing loop. Body and chest stay locked, no grabbing gold, no walking, no changing camera, no extra hands, no extra limbs, no background, no cave, no shadows on background, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_watch_48_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background. Pre-robbery scouting animation, not stealing yet. Body remains almost frozen in the stealing start pose; shoulders rise and fall subtly, the hood tilts toward the chest, glances around carefully, and the hand hovers near the chest before returning exactly to the first-frame pose. Minimal movement only, no walking, no grabbing gold, no coins moving, no extra hands, no extra limbs. Locked camera, no background, no shadows on background, no cave, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_scout_watch_72_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-steal-isolated.png",
+      "prompt": "A single hooded thief crouched beside a treasure chest on a perfectly flat solid magenta background. Longer pre-robbery scouting loop, not stealing yet. The thief studies the chest, cautiously looks over one shoulder, looks back at the chest, and settles into the exact first-frame crouched pose that starts the stealing animation. Keep body position and feet locked; only small head, shoulder, and hand motion. No walking, no taking gold, no moving coins, no extra hands, no extra limbs, no background, no shadows on background, no cave, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_run_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-run-isolated.png",
+      "prompt": "A single hooded thief on a perfectly flat solid magenta background sprinting in place with cloak and pouch moving. Seamless looping run cycle: start and end in the exact same running pose. Locked camera, no shadows on background, no cave, no floor, no props, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    },
+    {
+      "id": "thief_loss_alpha",
+      "first_frame": "assets/video-keyframes-isolated/thief-loss-isolated.png",
+      "prompt": "A single hooded thief on a perfectly flat solid magenta background falling defeated with coins spilling from a pouch. Locked camera, no shadows on background, no cave, no floor, no text. Keep the magenta background perfectly uniform for chroma key removal."
+    }
+  ]
+}
