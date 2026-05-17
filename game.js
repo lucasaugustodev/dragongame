@@ -148,6 +148,7 @@ const els = {
   cashoutValue: document.getElementById("cashoutValue"),
   riskTrack: document.getElementById("riskTrack"),
   dragonVideo: document.getElementById("dragonVideo"),
+  dragonVideoBuffer: document.getElementById("dragonVideoBuffer"),
   thiefVideo: document.getElementById("thiefVideo"),
   thiefVideoBuffer: document.getElementById("thiefVideoBuffer"),
   dragonSprite: document.getElementById("dragonSprite"),
@@ -168,6 +169,12 @@ const maxBet = 500;
 let animationTick = 0;
 let sequenceTimerId = null;
 let fireImpactTimerId = null;
+const dragonVideoPool = {
+  active: els.dragonVideo,
+  standby: els.dragonVideoBuffer,
+  pendingKey: null,
+  switchToken: 0,
+};
 const thiefVideoPool = {
   active: els.thiefVideo,
   standby: els.thiefVideoBuffer,
@@ -533,6 +540,7 @@ function configureVideoElement(video, config, resetTime = true) {
   video.dataset.videoSrc = config.src;
   video.dataset.autoplay = String(config.autoplay !== false);
   video.loop = config.loop;
+  video.classList.toggle("is-dragon-sleep", config.key === "dragonSleep");
 
   if (srcChanged) {
     video.src = config.src;
@@ -596,14 +604,15 @@ function setActorVideo(video, config) {
   return true;
 }
 
-function retireBufferedVideo(video, key) {
+function retireBufferedVideo(pool, video, key) {
   window.setTimeout(() => {
-    if (video.dataset.videoKey !== key || video === thiefVideoPool.active) {
+    if (video.dataset.videoKey !== key || video === pool.active) {
       return;
     }
 
     video.pause();
     video.hidden = true;
+    video.classList.remove("is-active");
   }, 260);
 }
 
@@ -621,7 +630,7 @@ function activateBufferedVideo(pool, incoming, outgoing, config, token) {
   const outgoingKey = outgoing.dataset.videoKey;
   pool.active = incoming;
   pool.standby = outgoing;
-  retireBufferedVideo(outgoing, outgoingKey);
+  retireBufferedVideo(pool, outgoing, outgoingKey);
 }
 
 function setBufferedActorVideo(pool, config) {
@@ -675,7 +684,7 @@ function setBufferedActorVideo(pool, config) {
 
 function renderVideos() {
   const config = getVideoConfig();
-  const hasDragonVideo = setActorVideo(els.dragonVideo, config.dragon);
+  const hasDragonVideo = setBufferedActorVideo(dragonVideoPool, config.dragon);
   const hasThiefVideo = setBufferedActorVideo(thiefVideoPool, config.thief);
 
   els.stage.classList.toggle("use-dragon-video", hasDragonVideo);
@@ -810,7 +819,7 @@ els.decreaseBet.addEventListener("click", () => adjustBet(-betStep));
 els.increaseBet.addEventListener("click", () => adjustBet(betStep));
 els.playAgainButton.addEventListener("click", playAgain);
 els.resetButton.addEventListener("click", resetBalance);
-[els.dragonVideo, els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {
+[els.dragonVideo, els.dragonVideoBuffer, els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {
   video.addEventListener("canplay", () => {
     if (video.dataset.autoplay === "false") {
       video.pause();

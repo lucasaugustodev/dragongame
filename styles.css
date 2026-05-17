@@ -1455,6 +1455,14 @@ button {
   opacity: 0.96;
 }
 
+.stage.use-dragon-video .dragon-video {
+  opacity: 0;
+}
+
+.stage.use-dragon-video .dragon-video.is-active {
+  opacity: 0.96;
+}
+
 .stage.ready .dragon-video,
 .stage.stealing .dragon-video,
 .stage.firing .dragon-video,
@@ -1483,4 +1491,12 @@ button {
   left: 8%;
   bottom: 44%;
   width: min(55%, 705px);
+}
+
+.stage .dragon-video.is-dragon-sleep {
+  left: 8%;
+  right: auto;
+  bottom: 44%;
+  width: min(55%, 705px);
+  transform: none;
 }
