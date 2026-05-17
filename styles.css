@@ -1477,3 +1477,10 @@ button {
   width: min(130%, 610px);
   transform: translateX(-50%);
 }
+
+.stage.ready .dragon-video,
+.stage.stealing .dragon-video {
+  left: 8%;
+  bottom: 44%;
+  width: min(55%, 705px);
+}
