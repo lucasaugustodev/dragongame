@@ -3,9 +3,9 @@
   --line: rgba(247, 194, 79, 0.38);
   --text: #f8ecd2;
   --muted: #bba98c;
-  --thief-x: 4%;
-  --thief-y: 30%;
-  --thief-w: 58%;
+  --thief-x: 50%;
+  --thief-y: 29%;
+  --thief-w: 142%;
   --dragon-x: -12%;
   --dragon-y: 43%;
   --dragon-w: 92%;
@@ -133,7 +133,8 @@ select {
 .thief {
   left: var(--thief-x);
   bottom: var(--thief-y);
-  width: min(var(--thief-w), 245px);
+  width: min(var(--thief-w), 610px);
+  transform: translateX(-50%);
 }
 
 .phase-tag {
