@@ -145,10 +145,10 @@ function updateBackground() {
 function applySliders() {
   document.documentElement.style.setProperty("--thief-x", `${sliders.thiefX.value}%`);
   document.documentElement.style.setProperty("--thief-y", `${sliders.thiefY.value}%`);
-  document.documentElement.style.setProperty("--thief-w", `${sliders.thiefW.value}vw`);
+  document.documentElement.style.setProperty("--thief-w", `${sliders.thiefW.value}%`);
   document.documentElement.style.setProperty("--dragon-x", `${sliders.dragonX.value}%`);
   document.documentElement.style.setProperty("--dragon-y", `${sliders.dragonY.value}%`);
-  document.documentElement.style.setProperty("--dragon-w", `${sliders.dragonW.value}vw`);
+  document.documentElement.style.setProperty("--dragon-w", `${sliders.dragonW.value}%`);
 }
 
 function updateStatus(note) {

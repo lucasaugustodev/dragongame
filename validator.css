@@ -5,10 +5,10 @@
   --muted: #bba98c;
   --thief-x: 4%;
   --thief-y: 30%;
-  --thief-w: 58vw;
+  --thief-w: 58%;
   --dragon-x: -12%;
   --dragon-y: 43%;
-  --dragon-w: 92vw;
+  --dragon-w: 92%;
 }
 
 * {
@@ -58,7 +58,21 @@ select {
     linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.66)),
     url("assets/processed/cave-background.png");
   background-size: cover;
-  background-position: 48% center;
+  background-position: 75% center;
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  height: 36%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 58%, rgba(6, 5, 4, 0.72), transparent 40%),
+    linear-gradient(180deg, transparent, rgba(5, 4, 3, 0.72) 38%, rgba(5, 4, 3, 0.92));
 }
 
 .stage.checker {
@@ -80,6 +94,12 @@ select {
   background: #fff;
 }
 
+.stage.checker::after,
+.stage.black::after,
+.stage.white::after {
+  display: none;
+}
+
 .actor,
 .prop {
   position: absolute;
@@ -92,34 +112,28 @@ select {
 .dragon {
   right: var(--dragon-x);
   bottom: var(--dragon-y);
-  width: min(var(--dragon-w), 610px);
+  width: min(var(--dragon-w), 390px);
 }
 
 .stage.full-firing .dragon {
-  left: -28%;
+  left: -24%;
   right: auto;
-  bottom: 53%;
-  width: min(176vw, 760px);
+  bottom: 51%;
+  width: min(164%, 705px);
   transform: none;
 }
 
 .stage.full-firing .thief {
   left: 50%;
-  bottom: 25%;
-  width: min(150vw, 650px);
+  bottom: 29%;
+  width: min(142%, 610px);
   transform: translateX(-50%);
 }
 
 .thief {
   left: var(--thief-x);
   bottom: var(--thief-y);
-  width: min(var(--thief-w), 265px);
-}
-
-.chest {
-  left: 43%;
-  bottom: 30%;
-  width: min(44vw, 190px);
+  width: min(var(--thief-w), 245px);
 }
 
 .phase-tag {
