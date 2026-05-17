@@ -1454,3 +1454,26 @@ button {
 .stage.use-thief-video .thief-video.is-active {
   opacity: 0.96;
 }
+
+.stage.ready .dragon-video,
+.stage.stealing .dragon-video,
+.stage.firing .dragon-video,
+.stage.caught .dragon-video,
+.stage.result-loss .dragon-video {
+  left: -5%;
+  right: auto;
+  bottom: 49%;
+  width: min(92%, 705px);
+  transform: none;
+}
+
+.stage.ready .thief-video,
+.stage.stealing .thief-video,
+.stage.firing .thief-video,
+.stage.caught .thief-video,
+.stage.result-loss .thief-video {
+  left: 52%;
+  bottom: 10%;
+  width: min(130%, 610px);
+  transform: translateX(-50%);
+}

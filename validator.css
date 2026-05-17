@@ -3,11 +3,11 @@
   --line: rgba(247, 194, 79, 0.38);
   --text: #f8ecd2;
   --muted: #bba98c;
-  --thief-x: 50%;
-  --thief-y: 29%;
-  --thief-w: 142%;
-  --dragon-x: -12%;
-  --dragon-y: 43%;
+  --thief-x: 52%;
+  --thief-y: 10%;
+  --thief-w: 130%;
+  --dragon-x: -5%;
+  --dragon-y: 49%;
   --dragon-w: 92%;
 }
 
@@ -111,23 +111,24 @@ textarea {
 }
 
 .dragon {
-  right: var(--dragon-x);
+  left: var(--dragon-x);
+  right: auto;
   bottom: var(--dragon-y);
-  width: min(var(--dragon-w), 390px);
+  width: min(var(--dragon-w), 705px);
 }
 
 .stage.full-firing .dragon {
-  left: -24%;
+  left: var(--dragon-x);
   right: auto;
-  bottom: 51%;
-  width: min(164%, 705px);
+  bottom: var(--dragon-y);
+  width: min(var(--dragon-w), 705px);
   transform: none;
 }
 
 .stage.full-firing .thief {
-  left: 50%;
-  bottom: 29%;
-  width: min(142%, 610px);
+  left: var(--thief-x);
+  bottom: var(--thief-y);
+  width: min(var(--thief-w), 610px);
   transform: translateX(-50%);
 }
 
