@@ -188,6 +188,7 @@ const state = {
   fireImpact: false,
   stealClip: "catchingGold",
   stealActionId: 0,
+  stealActionLocked: false,
   status: "Escolha uma aposta e inicie o roubo.",
 };
 
@@ -245,6 +246,7 @@ function startRound() {
   state.fireImpact = false;
   state.stealClip = "catchingGold";
   state.stealActionId += 1;
+  state.stealActionLocked = true;
   state.status = "Voce pegou o primeiro tesouro. Saque agora ou roube mais.";
   saveBalance();
   render();
@@ -257,6 +259,10 @@ function stealMore() {
   }
 
   if (state.phase !== "stealing") {
+    return;
+  }
+
+  if (state.stealActionLocked) {
     return;
   }
 
@@ -274,6 +280,7 @@ function stealMore() {
   state.risk = Math.min(100, state.risk + 12 + Math.floor(Math.random() * 7));
   state.stealClip = "robbing";
   state.stealActionId += 1;
+  state.stealActionLocked = true;
   state.status = `Roubo perfeito. O tesouro agora vale ${money.format(state.gold)}.`;
   render();
 }
@@ -294,6 +301,7 @@ function wakeDragon() {
   state.risk = 100;
   state.correctPath = null;
   state.fireImpact = false;
+  state.stealActionLocked = false;
   state.status = "O dragao acordou antes do cashout. Voce perdeu o ouro.";
   fireImpactTimerId = window.setTimeout(showFireImpact, 6100);
   sequenceTimerId = window.setTimeout(finishLossFromDragon, 11200);
@@ -361,6 +369,7 @@ function finishRound(kind, amount, message) {
   clearSequenceTimer();
   state.phase = "result";
   state.resultKind = kind;
+  state.stealActionLocked = false;
   state.status = message;
   state.resultAmount = amount;
   saveBalance();
@@ -381,6 +390,7 @@ function playAgain() {
   state.fireImpact = false;
   state.stealClip = "catchingGold";
   state.stealActionId += 1;
+  state.stealActionLocked = false;
   state.status = state.balance > 0
     ? "Escolha uma aposta e inicie o roubo."
     : "Saldo zerado. Resete o saldo para jogar novamente.";
@@ -697,16 +707,36 @@ function renderButtons() {
   const stealing = state.phase === "stealing";
   const canStart = ready && state.balance >= state.bet;
   const betLocked = state.phase !== "ready";
+  const canStealMore = stealing && !state.stealActionLocked;
 
-  els.stealButton.disabled = !(canStart || stealing);
+  els.stealButton.disabled = !(canStart || canStealMore);
   els.cashoutButton.disabled = !stealing;
   els.decreaseBet.disabled = betLocked || state.bet <= betStep;
   els.increaseBet.disabled = betLocked || state.bet >= Math.min(maxBet, state.balance);
 
-  els.stealButtonLabel.textContent = ready ? "Iniciar roubo" : "Roubar mais";
-  els.nextMultiplierLabel.textContent = stealing
+  els.stealButtonLabel.textContent = state.stealActionLocked
+    ? "Roubando..."
+    : ready
+    ? "Iniciar roubo"
+    : "Roubar mais";
+  els.nextMultiplierLabel.textContent = state.stealActionLocked
+    ? "Aguarde"
+    : stealing
     ? `Proximo: +${multiplierStep.toFixed(2)}x`
     : "Primeiro bau";
+}
+
+function releaseStealActionLock(videoKey) {
+  if (!state.stealActionLocked || state.phase !== "stealing") {
+    return;
+  }
+
+  if (videoKey !== getStealVideoConfig().key) {
+    return;
+  }
+
+  state.stealActionLocked = false;
+  renderButtons();
 }
 
 function renderStageClass() {
@@ -795,7 +825,10 @@ els.resetButton.addEventListener("click", resetBalance);
   video.addEventListener("ended", () => {
     if (video.dataset.videoKey === "thiefCatchingFire" && state.phase === "firing") {
       finishLossFromDragon();
+      return;
     }
+
+    releaseStealActionLock(video.dataset.videoKey);
   });
 });
 
