@@ -1335,9 +1335,17 @@ button {
   }
 
   .stage.firing .dragon-video {
-    left: -24%;
-    bottom: 51%;
-    width: min(164vw, 705px);
+    left: -5%;
+    bottom: 49%;
+    width: min(92%, 705px);
+  }
+
+  .stage.firing .thief-video,
+  .stage.caught .thief-video,
+  .stage.result-loss .thief-video {
+    left: 52%;
+    bottom: 10%;
+    width: min(130%, 610px);
   }
 
   .result-panel {
