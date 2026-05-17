@@ -29,7 +29,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -175,11 +176,23 @@ label {
 
 select,
 input,
+textarea,
 button {
   min-height: 36px;
   border: 1px solid rgba(247, 194, 79, 0.34);
   background: rgba(0, 0, 0, 0.56);
   color: var(--text);
+}
+
+textarea {
+  width: 100%;
+  min-height: 156px;
+  padding: 10px;
+  resize: vertical;
+  color: #ffe2a2;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 button {

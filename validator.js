@@ -44,6 +44,8 @@ const els = {
   stealMs: document.getElementById("stealMs"),
   attackMs: document.getElementById("attackMs"),
   bgMode: document.getElementById("bgMode"),
+  coordsOutput: document.getElementById("coordsOutput"),
+  copyCoordsButton: document.getElementById("copyCoordsButton"),
   status: document.getElementById("status"),
 };
 
@@ -53,6 +55,7 @@ const sliders = ["thiefX", "thiefY", "thiefW", "dragonX", "dragonY", "dragonW"].
 }, {});
 
 let timers = [];
+let copyFeedbackTimer = null;
 
 function fillSelect(select, items) {
   select.innerHTML = "";
@@ -149,9 +152,61 @@ function applySliders() {
   document.documentElement.style.setProperty("--dragon-x", `${sliders.dragonX.value}%`);
   document.documentElement.style.setProperty("--dragon-y", `${sliders.dragonY.value}%`);
   document.documentElement.style.setProperty("--dragon-w", `${sliders.dragonW.value}%`);
+  updateCoordinatesOutput();
+}
+
+function getCoordinatesText() {
+  const pre = selected(preClips, els.preSelect.value);
+  const attack = selected(attackClips, els.attackSelect.value);
+  return [
+    "DRAGON_VALIDATOR_COORDS",
+    `phase=${els.phaseTag.textContent}`,
+    `preClip=${pre.id}`,
+    `attackClip=${attack.id}`,
+    `bgMode=${els.bgMode.value}`,
+    `preMs=${els.preMs.value}`,
+    `stealMs=${els.stealMs.value}`,
+    `attackMs=${els.attackMs.value}`,
+    `thiefX=${sliders.thiefX.value}%`,
+    `thiefY=${sliders.thiefY.value}%`,
+    `thiefW=${sliders.thiefW.value}%`,
+    `dragonX=${sliders.dragonX.value}%`,
+    `dragonY=${sliders.dragonY.value}%`,
+    `dragonW=${sliders.dragonW.value}%`,
+    "",
+    "CSS_BASE:",
+    `--thief-x: ${sliders.thiefX.value}%;`,
+    `--thief-y: ${sliders.thiefY.value}%;`,
+    `--thief-w: ${sliders.thiefW.value}%;`,
+    `--dragon-x: ${sliders.dragonX.value}%;`,
+    `--dragon-y: ${sliders.dragonY.value}%;`,
+    `--dragon-w: ${sliders.dragonW.value}%;`,
+  ].join("\n");
+}
+
+function updateCoordinatesOutput() {
+  els.coordsOutput.value = getCoordinatesText();
+}
+
+async function copyCoordinates() {
+  updateCoordinatesOutput();
+
+  try {
+    await navigator.clipboard.writeText(els.coordsOutput.value);
+  } catch {
+    els.coordsOutput.select();
+    document.execCommand("copy");
+  }
+
+  els.copyCoordsButton.textContent = "Copiado";
+  window.clearTimeout(copyFeedbackTimer);
+  copyFeedbackTimer = window.setTimeout(() => {
+    els.copyCoordsButton.textContent = "Copiar coordenadas";
+  }, 1400);
 }
 
 function updateStatus(note) {
+  updateCoordinatesOutput();
   els.status.textContent = [
     note,
     `dragon=${els.dragonVideo.dataset.src?.split("/").pop() || ""}`,
@@ -170,6 +225,11 @@ els.sequenceButton.addEventListener("click", sequence);
 els.preSelect.addEventListener("change", prePhase);
 els.attackSelect.addEventListener("change", attackPhase);
 els.bgMode.addEventListener("change", updateBackground);
+els.copyCoordsButton.addEventListener("click", copyCoordinates);
+
+[els.preMs, els.stealMs, els.attackMs].forEach((input) => {
+  input.addEventListener("input", updateCoordinatesOutput);
+});
 
 Object.values(sliders).forEach((slider) => {
   slider.addEventListener("input", applySliders);
