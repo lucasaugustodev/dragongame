@@ -1438,3 +1438,11 @@ button {
     font-size: 0.54rem;
   }
 }
+
+.stage.use-thief-video .thief-video {
+  opacity: 0;
+}
+
+.stage.use-thief-video .thief-video.is-active {
+  opacity: 0.96;
+}

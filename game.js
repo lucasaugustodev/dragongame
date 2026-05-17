@@ -149,6 +149,7 @@ const els = {
   riskTrack: document.getElementById("riskTrack"),
   dragonVideo: document.getElementById("dragonVideo"),
   thiefVideo: document.getElementById("thiefVideo"),
+  thiefVideoBuffer: document.getElementById("thiefVideoBuffer"),
   dragonSprite: document.getElementById("dragonSprite"),
   thiefSprite: document.getElementById("thiefSprite"),
   resultPanel: document.getElementById("resultPanel"),
@@ -167,6 +168,12 @@ const maxBet = 500;
 let animationTick = 0;
 let sequenceTimerId = null;
 let fireImpactTimerId = null;
+const thiefVideoPool = {
+  active: els.thiefVideo,
+  standby: els.thiefVideoBuffer,
+  pendingKey: null,
+  switchToken: 0,
+};
 
 const state = {
   phase: "ready",
@@ -510,26 +517,29 @@ function getVideoConfig() {
   };
 }
 
-function setActorVideo(video, config) {
-  if (!config) {
-    if (!video.hidden) {
-      video.pause();
-      video.hidden = true;
-    }
-    return false;
+function configureVideoElement(video, config, resetTime = true) {
+  const srcChanged = video.dataset.videoSrc !== config.src;
+  video.dataset.videoKey = config.key;
+  video.dataset.videoSrc = config.src;
+  video.dataset.autoplay = String(config.autoplay !== false);
+  video.loop = config.loop;
+
+  if (srcChanged) {
+    video.src = config.src;
   }
 
-  if (video.dataset.videoKey !== config.key) {
-    video.dataset.videoKey = config.key;
-    video.dataset.autoplay = String(config.autoplay !== false);
-    video.src = config.src;
-    video.loop = config.loop;
+  if (resetTime) {
     try {
       video.currentTime = config.startTime || 0;
     } catch {}
-    video.load();
   }
 
+  if (srcChanged) {
+    video.load();
+  }
+}
+
+function syncVideoPlayback(video, config) {
   video.hidden = false;
   video.loop = config.loop;
   video.dataset.autoplay = String(config.autoplay !== false);
@@ -548,22 +558,115 @@ function setActorVideo(video, config) {
       freeze();
     }
 
-    return true;
+    return;
   }
 
   if (config.holdLastFrame && video.ended) {
     video.pause();
-    return true;
+    return;
   }
 
   video.play().catch(() => {});
+}
+
+function setActorVideo(video, config) {
+  if (!config) {
+    if (!video.hidden) {
+      video.pause();
+      video.hidden = true;
+    }
+    return false;
+  }
+
+  if (video.dataset.videoKey !== config.key) {
+    configureVideoElement(video, config);
+  }
+
+  syncVideoPlayback(video, config);
+  return true;
+}
+
+function retireBufferedVideo(video, key) {
+  window.setTimeout(() => {
+    if (video.dataset.videoKey !== key || video === thiefVideoPool.active) {
+      return;
+    }
+
+    video.pause();
+    video.hidden = true;
+  }, 260);
+}
+
+function activateBufferedVideo(pool, incoming, outgoing, config, token) {
+  if (token !== pool.switchToken) {
+    return;
+  }
+
+  pool.pendingKey = null;
+  incoming.hidden = false;
+  incoming.classList.add("is-active");
+  outgoing.classList.remove("is-active");
+  syncVideoPlayback(incoming, config);
+
+  const outgoingKey = outgoing.dataset.videoKey;
+  pool.active = incoming;
+  pool.standby = outgoing;
+  retireBufferedVideo(outgoing, outgoingKey);
+}
+
+function setBufferedActorVideo(pool, config) {
+  if (!config) {
+    [pool.active, pool.standby].forEach((video) => {
+      video.pause();
+      video.hidden = true;
+      video.classList.remove("is-active");
+    });
+    pool.pendingKey = null;
+    return false;
+  }
+
+  if (pool.active.dataset.videoKey === config.key) {
+    pool.active.classList.add("is-active");
+    syncVideoPlayback(pool.active, config);
+    return true;
+  }
+
+  if (!pool.active.hidden && pool.active.dataset.videoSrc === config.src) {
+    pool.pendingKey = null;
+    pool.switchToken += 1;
+    configureVideoElement(pool.active, config);
+    pool.active.classList.add("is-active");
+    syncVideoPlayback(pool.active, config);
+    return true;
+  }
+
+  const incoming = pool.standby;
+  const outgoing = pool.active;
+  const token = pool.switchToken + 1;
+  pool.switchToken = token;
+  pool.pendingKey = config.key;
+
+  incoming.hidden = false;
+  incoming.classList.remove("is-active");
+  configureVideoElement(incoming, config);
+  syncVideoPlayback(incoming, config);
+
+  const activate = () => activateBufferedVideo(pool, incoming, outgoing, config, token);
+
+  if (incoming.readyState >= 2) {
+    window.requestAnimationFrame(activate);
+  } else {
+    incoming.addEventListener("loadeddata", activate, { once: true });
+    incoming.addEventListener("canplay", activate, { once: true });
+  }
+
   return true;
 }
 
 function renderVideos() {
   const config = getVideoConfig();
   const hasDragonVideo = setActorVideo(els.dragonVideo, config.dragon);
-  const hasThiefVideo = setActorVideo(els.thiefVideo, config.thief);
+  const hasThiefVideo = setBufferedActorVideo(thiefVideoPool, config.thief);
 
   els.stage.classList.toggle("use-dragon-video", hasDragonVideo);
   els.stage.classList.toggle("use-thief-video", hasThiefVideo);
@@ -677,7 +780,7 @@ els.decreaseBet.addEventListener("click", () => adjustBet(-betStep));
 els.increaseBet.addEventListener("click", () => adjustBet(betStep));
 els.playAgainButton.addEventListener("click", playAgain);
 els.resetButton.addEventListener("click", resetBalance);
-[els.dragonVideo, els.thiefVideo].forEach((video) => {
+[els.dragonVideo, els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {
   video.addEventListener("canplay", () => {
     if (video.dataset.autoplay === "false") {
       video.pause();
@@ -688,10 +791,12 @@ els.resetButton.addEventListener("click", resetBalance);
   });
 });
 
-els.thiefVideo.addEventListener("ended", () => {
-  if (els.thiefVideo.dataset.videoKey === "thiefCatchingFire" && state.phase === "firing") {
-    finishLossFromDragon();
-  }
+[els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {
+  video.addEventListener("ended", () => {
+    if (video.dataset.videoKey === "thiefCatchingFire" && state.phase === "firing") {
+      finishLossFromDragon();
+    }
+  });
 });
 
 createRiskSegments();
