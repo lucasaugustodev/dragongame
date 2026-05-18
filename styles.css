@@ -161,7 +161,7 @@ button {
   width: min(120vw, 540px);
   height: auto;
   opacity: 0;
-  transition: opacity 180ms ease;
+  transition: opacity 420ms ease;
   filter: drop-shadow(0 28px 26px rgba(0, 0, 0, 0.72));
 }
 
@@ -171,7 +171,7 @@ button {
   width: clamp(230px, 25vw, 395px);
   height: auto;
   opacity: 0;
-  transition: opacity 180ms ease, left 180ms ease, bottom 180ms ease;
+  transition: opacity 420ms ease, left 180ms ease, bottom 180ms ease;
 }
 
 .stage.use-dragon-video .dragon-video,
@@ -224,10 +224,6 @@ button {
   opacity: 0;
 }
 
-.stage.firing .multiplier-panel,
-.stage.firing .loot-panel,
-.stage.firing .controls,
-.stage.firing .risk-wrap,
 .stage.cashout .controls,
 .stage.cashout .risk-wrap,
 .stage.result-cashout .controls,

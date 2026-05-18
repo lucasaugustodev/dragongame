@@ -623,6 +623,21 @@ function syncVideoPlayback(video, config) {
   video.play().catch(() => {});
 }
 
+function prepareBufferedVideo(video, config) {
+  video.hidden = false;
+  video.loop = config.loop;
+  video.dataset.autoplay = String(config.autoplay !== false);
+
+  if (config.autoplay === false) {
+    syncVideoPlayback(video, config);
+    return;
+  }
+
+  try {
+    video.pause();
+  } catch {}
+}
+
 function setActorVideo(video, config) {
   if (!config) {
     if (!video.hidden) {
@@ -649,7 +664,7 @@ function retireBufferedVideo(pool, video, key) {
     video.pause();
     video.hidden = true;
     video.classList.remove("is-active");
-  }, 260);
+  }, 520);
 }
 
 function activateBufferedVideo(pool, incoming, outgoing, config, token) {
@@ -704,7 +719,7 @@ function setBufferedActorVideo(pool, config) {
   incoming.hidden = false;
   incoming.classList.remove("is-active");
   configureVideoElement(incoming, config);
-  syncVideoPlayback(incoming, config);
+  prepareBufferedVideo(incoming, config);
 
   const activate = () => activateBufferedVideo(pool, incoming, outgoing, config, token);
 
