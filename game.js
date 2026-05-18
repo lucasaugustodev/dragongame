@@ -138,6 +138,8 @@ const videoAssets = {
 };
 
 const els = {
+  preGame: document.getElementById("preGame"),
+  preGamePlay: document.getElementById("preGamePlay"),
   stage: document.getElementById("stage"),
   stepTitle: document.getElementById("stepTitle"),
   stepSubtitle: document.getElementById("stepSubtitle"),
@@ -509,6 +511,19 @@ function resetBalance() {
   state.bet = 100;
   playAgain();
   saveBalance();
+}
+
+function enterGame() {
+  if (!els.preGame || els.preGame.hidden) {
+    return;
+  }
+
+  els.preGame.classList.add("is-leaving");
+  els.preGame.setAttribute("aria-hidden", "true");
+
+  window.setTimeout(() => {
+    els.preGame.hidden = true;
+  }, 360);
 }
 
 function renderRisk() {
@@ -999,44 +1014,44 @@ function renderStageClass() {
 
 function renderStepCopy() {
   if (state.phase === "waking") {
-    els.stepTitle.textContent = "2. O dragao acordou!";
+    els.stepTitle.textContent = "O dragao acordou!";
     els.stepSubtitle.textContent = "Ele esta levantando.";
     return;
   }
 
   if (state.phase === "firing") {
-    els.stepTitle.textContent = "2. Fogo!";
+    els.stepTitle.textContent = "Fogo!";
     els.stepSubtitle.textContent = "O dragao cuspiu fogo.";
     return;
   }
 
   if (state.phase === "caught") {
-    els.stepTitle.textContent = "3B. O dragao te pegou!";
+    els.stepTitle.textContent = "O dragao te pegou!";
     els.stepSubtitle.textContent = "Ataque em andamento.";
     return;
   }
 
   if (state.phase === "cashout") {
-    els.stepTitle.textContent = "3. Cash out!";
+    els.stepTitle.textContent = "Cash out!";
     els.stepSubtitle.textContent = "Saindo com o ouro.";
     return;
   }
 
   if (state.phase === "result") {
     if (state.resultKind === "loss") {
-      els.stepTitle.textContent = "3B. O dragao te pegou!";
+      els.stepTitle.textContent = "O dragao te pegou!";
       els.stepSubtitle.textContent = "Voce perdeu o ouro.";
       return;
     }
 
     els.stepTitle.textContent = state.resultKind === "cashout"
-      ? "3. Cash out feito!"
-      : "3A. Fugiu com sucesso!";
+      ? "Cash out feito!"
+      : "Fugiu com sucesso!";
     els.stepSubtitle.textContent = "O ouro foi levado para o saldo.";
     return;
   }
 
-  els.stepTitle.textContent = "1. Roube o ouro";
+  els.stepTitle.textContent = "Roube o ouro";
   els.stepSubtitle.textContent = "O dragao esta dormindo...";
 }
 
@@ -1066,6 +1081,7 @@ els.decreaseBet.addEventListener("click", () => adjustBet(-betStep));
 els.increaseBet.addEventListener("click", () => adjustBet(betStep));
 els.playAgainButton.addEventListener("click", playAgain);
 els.resetButton.addEventListener("click", resetBalance);
+els.preGamePlay.addEventListener("click", enterGame);
 [els.dragonVideo, els.dragonVideoBuffer, els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {
   video.addEventListener("canplay", () => {
     if (video.dataset.autoplay === "false") {

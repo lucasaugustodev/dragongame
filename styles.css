@@ -46,6 +46,81 @@ button {
     #050403;
 }
 
+.pre-game {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 34px;
+  padding: 30px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 58%, rgba(255, 189, 60, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(3, 2, 1, 0.42), rgba(5, 3, 2, 0.94)),
+    url("assets/processed/cave-background.png");
+  background-size: cover;
+  background-position: 62% center;
+  transition: opacity 320ms ease, visibility 320ms ease;
+}
+
+.pre-game::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 51%, rgba(255, 213, 92, 0.2), transparent 20%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.74), transparent 38%, rgba(0, 0, 0, 0.74));
+}
+
+.pre-game.is-leaving {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pre-game-logo {
+  width: min(78vw, 440px);
+  max-height: 46dvh;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 26px 34px rgba(0, 0, 0, 0.74))
+    drop-shadow(0 0 24px rgba(255, 181, 46, 0.24));
+}
+
+.pre-game-play {
+  width: min(72vw, 270px);
+  min-height: 72px;
+  border: 1px solid rgba(255, 224, 137, 0.78);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 213, 93, 0.96), rgba(182, 100, 12, 0.98) 54%, rgba(90, 38, 5, 0.98));
+  box-shadow:
+    0 18px 30px rgba(0, 0, 0, 0.58),
+    0 0 34px rgba(247, 194, 79, 0.24),
+    inset 0 1px 0 rgba(255, 247, 204, 0.78),
+    inset 0 -5px 0 rgba(71, 24, 0, 0.4);
+  color: #fff8df;
+  cursor: pointer;
+  font-size: 1.36rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.72);
+  transition: transform 140ms ease, filter 140ms ease;
+}
+
+.pre-game-play:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.pre-game-play:active {
+  transform: translateY(1px);
+}
+
 .topbar,
 .statusbar {
   width: min(1480px, calc(100vw - 32px));
@@ -642,12 +717,13 @@ button {
 }
 
 .game-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 78px;
-  border: 0;
+  border: 1px solid rgba(255, 229, 162, 0.6);
+  border-radius: 8px;
   color: #fff7de;
-  background-color: rgba(9, 8, 7, 0.9);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
   display: grid;
   place-items: center;
   padding: 14px 24px;
@@ -655,16 +731,36 @@ button {
   text-transform: uppercase;
   cursor: pointer;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.72);
-  transition: transform 130ms ease, filter 130ms ease, opacity 130ms ease;
+  box-shadow:
+    0 12px 20px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -5px 0 rgba(0, 0, 0, 0.22);
+  transition: transform 130ms ease, filter 130ms ease, opacity 130ms ease, box-shadow 130ms ease;
+}
+
+.game-button::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.35), transparent 38%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 22%, rgba(0, 0, 0, 0.16) 74%);
+  pointer-events: none;
 }
 
 .game-button span {
+  position: relative;
+  z-index: 1;
   display: block;
   font-size: clamp(1rem, 1.8vw, 1.5rem);
   font-weight: 900;
 }
 
 .game-button small {
+  position: relative;
+  z-index: 1;
   display: block;
   color: #d9ffc8;
   font-size: 0.9rem;
@@ -674,6 +770,11 @@ button {
 .game-button:hover:not(:disabled) {
   transform: translateY(-1px);
   filter: brightness(1.1);
+  box-shadow:
+    0 15px 24px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(247, 194, 79, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -5px 0 rgba(0, 0, 0, 0.22);
 }
 
 .game-button:active:not(:disabled) {
@@ -687,15 +788,18 @@ button {
 }
 
 .game-button-green {
-  background-image: url("assets/sprites/ui-button-green.png");
+  background:
+    linear-gradient(180deg, #8be964 0%, #3fad22 47%, #126e1b 100%);
 }
 
 .game-button-amber {
-  background-image: url("assets/sprites/ui-button-amber.png");
+  background:
+    linear-gradient(180deg, #ffd86e 0%, #d08b18 48%, #74450b 100%);
 }
 
 .game-button-red {
-  background-image: url("assets/sprites/ui-button-red.png");
+  background:
+    linear-gradient(180deg, #ff875e 0%, #c22d18 48%, #71120d 100%);
 }
 
 .game-button-amber small {
@@ -718,30 +822,59 @@ button {
   right: 58px;
   top: 16px;
   height: 34px;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 4px;
-  padding: 6px;
-  border: 1px solid rgba(247, 194, 79, 0.36);
-  background: rgba(7, 6, 5, 0.82);
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  padding: 5px;
+  border: 1px solid rgba(247, 194, 79, 0.42);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(12, 72, 12, 0.34), rgba(110, 78, 5, 0.38) 48%, rgba(116, 12, 6, 0.46)),
+    rgba(7, 6, 5, 0.86);
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(0, 0, 0, 0.34);
 }
 
 .risk-segment {
+  flex: var(--risk-weight, 1) 1 0;
   min-width: 0;
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.68);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025));
+  box-shadow:
+    inset 0 0 12px rgba(0, 0, 0, 0.68),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transform: skewX(-10deg);
+}
+
+.risk-segment:nth-child(1) { --risk-weight: 0.72; }
+.risk-segment:nth-child(2) { --risk-weight: 0.82; }
+.risk-segment:nth-child(3) { --risk-weight: 0.95; }
+.risk-segment:nth-child(4) { --risk-weight: 1.1; }
+.risk-segment:nth-child(5) { --risk-weight: 1.28; }
+.risk-segment:nth-child(6) { --risk-weight: 1.5; }
+.risk-segment:nth-child(7) { --risk-weight: 1.78; }
+.risk-segment:nth-child(8) { --risk-weight: 2.1; }
+.risk-segment:nth-child(9) { --risk-weight: 2.48; }
+.risk-segment:nth-child(10) { --risk-weight: 2.92; }
+
+.risk-segment.active {
+  box-shadow:
+    inset 0 0 12px rgba(0, 0, 0, 0.42),
+    0 0 10px rgba(255, 219, 114, 0.14);
 }
 
 .risk-segment.active.safe {
-  background: linear-gradient(180deg, #22db24, #087e16);
+  background: linear-gradient(180deg, #50ed4a, #0e8f1d);
 }
 
 .risk-segment.active.warn {
-  background: linear-gradient(180deg, #ffd34a, #a66c00);
+  background: linear-gradient(180deg, #ffd96b, #b57900);
 }
 
 .risk-segment.active.danger {
-  background: linear-gradient(180deg, #ff5b2e, #a40707);
+  background: linear-gradient(180deg, #ff7648, #ad0909);
 }
 
 .risk-eye {
