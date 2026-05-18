@@ -147,12 +147,23 @@ function updateBackground() {
 }
 
 function applySliders() {
-  document.documentElement.style.setProperty("--thief-x", `${sliders.thiefX.value}%`);
-  document.documentElement.style.setProperty("--thief-y", `${sliders.thiefY.value}%`);
-  document.documentElement.style.setProperty("--thief-w", `${sliders.thiefW.value}%`);
-  document.documentElement.style.setProperty("--dragon-x", `${sliders.dragonX.value}%`);
-  document.documentElement.style.setProperty("--dragon-y", `${sliders.dragonY.value}%`);
-  document.documentElement.style.setProperty("--dragon-w", `${sliders.dragonW.value}%`);
+  const thiefX = Number(sliders.thiefX.value);
+  const thiefY = Number(sliders.thiefY.value);
+  const thiefW = Number(sliders.thiefW.value);
+  const dragonX = Number(sliders.dragonX.value);
+  const dragonY = Number(sliders.dragonY.value);
+  const dragonW = Number(sliders.dragonW.value);
+  const sleepScale = 55 / 92;
+
+  document.documentElement.style.setProperty("--thief-x", `${thiefX}%`);
+  document.documentElement.style.setProperty("--thief-y", `${thiefY}%`);
+  document.documentElement.style.setProperty("--thief-w", `${thiefW}%`);
+  document.documentElement.style.setProperty("--dragon-x", `${dragonX}%`);
+  document.documentElement.style.setProperty("--dragon-y", `${dragonY}%`);
+  document.documentElement.style.setProperty("--dragon-w", `${dragonW}%`);
+  document.documentElement.style.setProperty("--dragon-sleep-x", `${dragonX + 13}%`);
+  document.documentElement.style.setProperty("--dragon-sleep-y", `${dragonY - 5}%`);
+  document.documentElement.style.setProperty("--dragon-sleep-w", `${(dragonW * sleepScale).toFixed(2)}%`);
   updateCoordinatesOutput();
 }
 

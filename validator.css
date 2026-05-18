@@ -140,10 +140,10 @@ textarea {
 }
 
 .stage .dragon.is-dragon-sleep {
-  left: 8%;
+  left: var(--dragon-sleep-x);
   right: auto;
-  bottom: 44%;
-  width: min(55%, 705px);
+  bottom: var(--dragon-sleep-y);
+  width: min(var(--dragon-sleep-w), 705px);
   transform: none;
 }
 
