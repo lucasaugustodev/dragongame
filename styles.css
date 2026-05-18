@@ -216,8 +216,10 @@ button {
 
 .stage.ready .chest-sprite,
 .stage.stealing .chest-sprite,
+.stage.cashout .chest-sprite,
 .stage.firing .chest-sprite,
 .stage.caught .chest-sprite,
+.stage.result-cashout .chest-sprite,
 .stage.result-loss .chest-sprite {
   opacity: 0;
 }
@@ -226,6 +228,10 @@ button {
 .stage.firing .loot-panel,
 .stage.firing .controls,
 .stage.firing .risk-wrap,
+.stage.cashout .controls,
+.stage.cashout .risk-wrap,
+.stage.result-cashout .controls,
+.stage.result-cashout .risk-wrap,
 .stage.caught .multiplier-panel,
 .stage.caught .loot-panel,
 .stage.caught .controls,
@@ -1465,8 +1471,10 @@ button {
 
 .stage.ready .dragon-video,
 .stage.stealing .dragon-video,
+.stage.cashout .dragon-video,
 .stage.firing .dragon-video,
 .stage.caught .dragon-video,
+.stage.result-cashout .dragon-video,
 .stage.result-loss .dragon-video {
   left: -5%;
   right: auto;
@@ -1477,8 +1485,10 @@ button {
 
 .stage.ready .thief-video,
 .stage.stealing .thief-video,
+.stage.cashout .thief-video,
 .stage.firing .thief-video,
 .stage.caught .thief-video,
+.stage.result-cashout .thief-video,
 .stage.result-loss .thief-video {
   left: 52%;
   bottom: 10%;
@@ -1499,6 +1509,12 @@ button {
   bottom: 44%;
   width: min(55%, 705px);
   transform: none;
+}
+
+.stage.cashout.use-thief-video .thief-sprite,
+.stage.result-cashout.use-thief-video .thief-sprite,
+.stage.result-cashout.use-dragon-video .dragon-sprite {
+  opacity: 0;
 }
 
 .multiplier-panel {
@@ -1536,6 +1552,7 @@ button {
 }
 
 .stage.stealing .bet-panel,
+.stage.cashout .bet-panel,
 .stage.waking .bet-panel,
 .stage.firing .bet-panel,
 .stage.caught .bet-panel,

@@ -103,6 +103,12 @@ const videoAssets = {
     loop: false,
     holdLastFrame: true,
   },
+  thiefCashout: {
+    key: "thiefCashout",
+    src: "assets/videos/cashout_alpha.webm",
+    loop: false,
+    holdLastFrame: true,
+  },
   thiefCatchingFire: {
     key: "thiefCatchingFire",
     src: "assets/videos/catching_fire2_alpha.webm",
@@ -297,9 +303,25 @@ function cashOut() {
     return;
   }
 
-  state.balance += state.gold;
   clearSequenceTimer();
-  finishRound("cashout", state.gold, "Voce saiu antes do dragao acordar.");
+  state.phase = "cashout";
+  state.resultKind = "cashout";
+  state.resultAmount = state.gold;
+  state.balance += state.gold;
+  state.risk = 0;
+  state.stealActionLocked = false;
+  state.status = "Voce saiu antes do dragao acordar.";
+  saveBalance();
+  sequenceTimerId = window.setTimeout(finishCashout, 4400);
+  render();
+}
+
+function finishCashout() {
+  if (state.phase !== "cashout") {
+    return;
+  }
+
+  finishRound("cashout", state.resultAmount, "Voce saiu antes do dragao acordar.");
 }
 
 function wakeDragon() {
@@ -500,6 +522,13 @@ function getVideoConfig() {
     };
   }
 
+  if (state.phase === "cashout") {
+    return {
+      dragon: videoAssets.dragonSleep,
+      thief: videoAssets.thiefCashout,
+    };
+  }
+
   if (state.phase === "waking") {
     return {
       dragon: videoAssets.dragonWakeFromSleep,
@@ -525,6 +554,13 @@ function getVideoConfig() {
     return {
       dragon: videoAssets.dragonFiringNow,
       thief: videoAssets.thiefCatchingFire,
+    };
+  }
+
+  if (state.phase === "result" && state.resultKind === "cashout") {
+    return {
+      dragon: videoAssets.dragonSleep,
+      thief: videoAssets.thiefCashout,
     };
   }
 
@@ -752,6 +788,7 @@ function renderStageClass() {
   let className = "stage";
   if (state.phase === "ready") className += " ready";
   if (state.phase === "stealing") className += " stealing";
+  if (state.phase === "cashout") className += " cashout";
   if (state.phase === "waking") className += " waking";
   if (state.phase === "firing") className += " firing";
   if (state.phase === "caught") className += " caught";
@@ -775,6 +812,12 @@ function renderStepCopy() {
   if (state.phase === "caught") {
     els.stepTitle.textContent = "3B. O dragao te pegou!";
     els.stepSubtitle.textContent = "Ataque em andamento.";
+    return;
+  }
+
+  if (state.phase === "cashout") {
+    els.stepTitle.textContent = "3. Cash out!";
+    els.stepSubtitle.textContent = "Saindo com o ouro.";
     return;
   }
 
@@ -834,6 +877,11 @@ els.resetButton.addEventListener("click", resetBalance);
   video.addEventListener("ended", () => {
     if (video.dataset.videoKey === "thiefCatchingFire" && state.phase === "firing") {
       finishLossFromDragon();
+      return;
+    }
+
+    if (video.dataset.videoKey === "thiefCashout" && state.phase === "cashout") {
+      finishCashout();
       return;
     }
 
