@@ -929,7 +929,7 @@ function renderDragonToast() {
       els.dragonPopup.hidden = true;
       els.dragonPopup.classList.remove("is-visible");
       dragonToastTimerId = null;
-    }, 1500);
+    }, 2500);
   }
 }
 

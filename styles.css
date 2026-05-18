@@ -304,10 +304,10 @@ button {
 
 .dragon-popup {
   position: absolute;
-  left: 50%;
-  top: 18%;
+  left: 52%;
+  bottom: 39%;
   z-index: 7;
-  width: min(620px, calc(100% - 36px));
+  width: min(540px, calc(100% - 36px));
   padding: 12px 18px;
   border: 1px solid rgba(255, 114, 72, 0.78);
   border-radius: 6px;
@@ -330,7 +330,7 @@ button {
 }
 
 .dragon-popup.is-visible {
-  animation: dragonWakePopup 1500ms ease-out both;
+  animation: dragonWakePopup 2500ms ease-out both;
 }
 
 .fire-screen,
@@ -1148,7 +1148,7 @@ button {
   }
 
   .dragon-popup {
-    top: 14%;
+    bottom: 38%;
   }
 
   .fireball-fx {
@@ -1700,7 +1700,7 @@ button {
   }
 
   .dragon-popup {
-    top: 12%;
+    bottom: 37%;
     width: calc(100% - 24px);
     padding: 9px 10px;
     font-size: 0.76rem;
@@ -1856,7 +1856,7 @@ button {
   }
 
   .dragon-popup {
-    top: 10%;
+    bottom: 36%;
     padding: 8px 9px;
     font-size: 0.68rem;
   }
