@@ -81,6 +81,7 @@ function playVideo(video, src, loop) {
     video.currentTime = 0;
   }
   video.loop = loop;
+  video.classList.toggle("is-dragon-sleep", video === els.dragonVideo && src === clips.dragonSleep);
   video.play().catch(() => {});
 }
 
