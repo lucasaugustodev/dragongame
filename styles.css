@@ -257,6 +257,51 @@ button {
   width: clamp(190px, 19vw, 290px);
 }
 
+.steal-popup {
+  position: absolute;
+  left: 52%;
+  bottom: 39%;
+  z-index: 6;
+  min-width: 190px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 226, 133, 0.72);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(58, 35, 7, 0.94), rgba(18, 12, 5, 0.92));
+  box-shadow:
+    0 0 22px rgba(255, 190, 43, 0.32),
+    inset 0 0 18px rgba(255, 207, 83, 0.12);
+  color: #fff2b8;
+  font-size: clamp(0.82rem, 1.2vw, 1.05rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.74);
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.steal-popup::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  border-right: 1px solid rgba(255, 226, 133, 0.72);
+  border-bottom: 1px solid rgba(255, 226, 133, 0.72);
+  background: rgba(18, 12, 5, 0.92);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.steal-popup.is-visible {
+  animation: stealPopup 2700ms ease-out both;
+}
+
 .fire-screen,
 .thief-burn-effect,
 .coin-rain {
@@ -348,6 +393,52 @@ button {
 .stage.fire-impact .thief-burn-effect {
   opacity: 1;
   animation: burnCoverPulse 760ms ease-in-out infinite;
+}
+
+.impact-fx {
+  position: absolute;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: screen;
+}
+
+.impact-fx.is-active {
+  opacity: 0.9;
+}
+
+.fireball-fx {
+  left: 52%;
+  bottom: 22%;
+  width: min(46%, 360px);
+  height: auto;
+  filter:
+    saturate(1.35)
+    contrast(1.08)
+    brightness(1.12)
+    drop-shadow(0 0 30px rgba(255, 113, 0, 0.52));
+  transform: translateX(-50%) rotate(-7deg) scale(1.08);
+  transform-origin: 50% 54%;
+  -webkit-mask-image: radial-gradient(ellipse 68% 58% at 50% 43%, #000 0 60%, rgba(0, 0, 0, 0.76) 73%, transparent 100%);
+  mask-image: radial-gradient(ellipse 68% 58% at 50% 43%, #000 0 60%, rgba(0, 0, 0, 0.76) 73%, transparent 100%);
+}
+
+.debris-fx {
+  left: 50%;
+  top: 9%;
+  width: min(132%, 1260px);
+  height: auto;
+  filter:
+    saturate(1.4)
+    brightness(1.2)
+    drop-shadow(0 0 12px rgba(255, 190, 56, 0.44));
+  opacity: 0;
+  transform: translateX(-50%);
+}
+
+.debris-fx.is-active {
+  opacity: 0.82;
 }
 
 .coin-rain {
@@ -901,6 +992,25 @@ button {
   }
 }
 
+@keyframes stealPopup {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 12px) scale(0.92);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  82% {
+    opacity: 1;
+    transform: translate(-50%, -8px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -28px) scale(1.04);
+  }
+}
+
 @keyframes coinFall {
   0% {
     opacity: 0;
@@ -980,6 +1090,21 @@ button {
     left: 34%;
     bottom: 26%;
     width: 210px;
+  }
+
+  .steal-popup {
+    left: 52%;
+    bottom: 38%;
+  }
+
+  .fireball-fx {
+    bottom: 22%;
+    width: min(50%, 360px);
+  }
+
+  .debris-fx {
+    top: 10%;
+    width: 142%;
   }
 
   .loot-panel {
@@ -1513,6 +1638,23 @@ button {
     font-size: 0.62rem;
   }
 
+  .steal-popup {
+    bottom: 37%;
+    min-width: 152px;
+    padding: 8px 11px;
+    font-size: 0.72rem;
+  }
+
+  .fireball-fx {
+    bottom: 23%;
+    width: min(62%, 280px);
+  }
+
+  .debris-fx {
+    top: 13%;
+    width: 160%;
+  }
+
   .risk-wrap {
     bottom: 5px;
     width: calc(100% - 16px);
@@ -1643,6 +1785,18 @@ button {
 
   .game-button small {
     font-size: 0.56rem;
+  }
+
+  .steal-popup {
+    bottom: 36%;
+    min-width: 140px;
+    padding: 7px 9px;
+    font-size: 0.66rem;
+  }
+
+  .fireball-fx {
+    bottom: 23%;
+    width: min(60%, 250px);
   }
 
   .risk-wrap {

@@ -159,6 +159,9 @@ const els = {
   thiefVideoBuffer: document.getElementById("thiefVideoBuffer"),
   dragonSprite: document.getElementById("dragonSprite"),
   thiefSprite: document.getElementById("thiefSprite"),
+  stealPopup: document.getElementById("stealPopup"),
+  fireballFxVideo: document.getElementById("fireballFxVideo"),
+  fireDebrisFxVideo: document.getElementById("fireDebrisFxVideo"),
   resultPanel: document.getElementById("resultPanel"),
   resultTitle: document.getElementById("resultTitle"),
   resultAmount: document.getElementById("resultAmount"),
@@ -175,6 +178,9 @@ const maxBet = 500;
 let animationTick = 0;
 let sequenceTimerId = null;
 let fireImpactTimerId = null;
+let stealToastTimerId = null;
+let renderedStealToastId = 0;
+let renderedFireImpactFx = false;
 const dragonVideoPool = {
   active: els.dragonVideo,
   standby: els.dragonVideoBuffer,
@@ -203,6 +209,9 @@ const state = {
   stealClip: "catchingGold",
   stealActionId: 0,
   stealActionLocked: false,
+  stealToastId: 0,
+  stealToastText: "",
+  pendingStealToastText: "",
   status: "Escolha uma aposta e inicie o roubo.",
 };
 
@@ -238,6 +247,9 @@ function warmupCriticalVideos() {
   preloadVideoAsset(videoAssets.dragonFiringNow);
   preloadVideoAsset(videoAssets.thiefCatchingFire);
   preloadVideoAsset(videoAssets.thiefCashout);
+  [els.fireballFxVideo, els.fireDebrisFxVideo].forEach((video) => {
+    video.load();
+  });
 }
 
 function createRiskSegments() {
@@ -261,6 +273,22 @@ function roundMultiplier(value) {
   return Math.round(value * 100) / 100;
 }
 
+function queueStealToast(amount) {
+  const coins = Math.max(0, Math.round(amount));
+  state.pendingStealToastText = `Voce roubou +${coins} moedas`;
+  state.stealToastText = "";
+}
+
+function revealQueuedStealToast() {
+  if (!state.pendingStealToastText) {
+    return;
+  }
+
+  state.stealToastId += 1;
+  state.stealToastText = state.pendingStealToastText;
+  state.pendingStealToastText = "";
+}
+
 function startRound() {
   if (state.balance < state.bet) {
     state.status = "Saldo insuficiente para essa aposta.";
@@ -281,6 +309,7 @@ function startRound() {
   state.stealClip = "catchingGold";
   state.stealActionId += 1;
   state.stealActionLocked = true;
+  queueStealToast(state.gold);
   state.status = "Voce pegou o primeiro tesouro. Saque agora ou roube mais.";
   saveBalance();
   render();
@@ -308,6 +337,7 @@ function stealMore() {
     return;
   }
 
+  const previousGold = state.gold;
   state.steals += 1;
   state.multiplier = roundMultiplier(state.multiplier + multiplierStep);
   state.gold = Math.round(state.bet * state.multiplier);
@@ -315,12 +345,13 @@ function stealMore() {
   state.stealClip = "robbing";
   state.stealActionId += 1;
   state.stealActionLocked = true;
+  queueStealToast(state.gold - previousGold);
   state.status = `Roubo perfeito. O tesouro agora vale ${money.format(state.gold)}.`;
   render();
 }
 
 function cashOut() {
-  if (state.phase !== "stealing") {
+  if (state.phase !== "stealing" || state.stealActionLocked) {
     return;
   }
 
@@ -441,6 +472,8 @@ function playAgain() {
   state.stealClip = "catchingGold";
   state.stealActionId += 1;
   state.stealActionLocked = false;
+  state.stealToastText = "";
+  state.pendingStealToastText = "";
   state.status = state.balance > 0
     ? "Escolha uma aposta e inicie o roubo."
     : "Saldo zerado. Resete o saldo para jogar novamente.";
@@ -793,7 +826,7 @@ function renderButtons() {
   const canStealMore = stealing && !state.stealActionLocked;
 
   els.stealButton.disabled = !(canStart || canStealMore);
-  els.cashoutButton.disabled = !stealing;
+  els.cashoutButton.disabled = !stealing || state.stealActionLocked;
   els.decreaseBet.disabled = betLocked || state.bet <= betStep;
   els.increaseBet.disabled = betLocked || state.bet >= Math.min(maxBet, state.balance);
 
@@ -809,6 +842,81 @@ function renderButtons() {
     : "Primeiro bau";
 }
 
+function renderStealToast() {
+  const visible = state.phase === "stealing" && Boolean(state.stealToastText);
+  els.stealPopup.hidden = !visible;
+
+  if (!visible) {
+    if (stealToastTimerId) {
+      window.clearTimeout(stealToastTimerId);
+      stealToastTimerId = null;
+    }
+    els.stealPopup.classList.remove("is-visible");
+    renderedStealToastId = state.stealToastId;
+    return;
+  }
+
+  els.stealPopup.textContent = state.stealToastText;
+
+  if (renderedStealToastId !== state.stealToastId) {
+    els.stealPopup.classList.remove("is-visible");
+    void els.stealPopup.offsetWidth;
+    els.stealPopup.classList.add("is-visible");
+    renderedStealToastId = state.stealToastId;
+
+    if (stealToastTimerId) {
+      window.clearTimeout(stealToastTimerId);
+    }
+
+    const toastId = state.stealToastId;
+    stealToastTimerId = window.setTimeout(() => {
+      if (toastId !== state.stealToastId) {
+        return;
+      }
+
+      els.stealPopup.hidden = true;
+      els.stealPopup.classList.remove("is-visible");
+      stealToastTimerId = null;
+    }, 2850);
+  }
+}
+
+function renderImpactFx() {
+  const active = state.phase === "firing" && state.fireImpact;
+  const videos = [els.fireballFxVideo, els.fireDebrisFxVideo];
+
+  videos.forEach((video) => {
+    video.hidden = !active;
+    video.classList.toggle("is-active", active);
+
+    if (!active) {
+      video.pause();
+      try {
+        video.currentTime = 0;
+      } catch {}
+    }
+  });
+
+  if (!active) {
+    renderedFireImpactFx = false;
+    return;
+  }
+
+  videos.forEach((video) => {
+    if (!renderedFireImpactFx) {
+      try {
+        video.currentTime = 0;
+      } catch {}
+    }
+
+    if (video.paused || !renderedFireImpactFx) {
+      video.play().catch(() => {});
+    }
+  });
+
+  renderedFireImpactFx = true;
+}
+
 function releaseStealActionLock(videoKey) {
   if (!state.stealActionLocked || state.phase !== "stealing") {
     return;
@@ -819,7 +927,9 @@ function releaseStealActionLock(videoKey) {
   }
 
   state.stealActionLocked = false;
+  revealQueuedStealToast();
   renderButtons();
+  renderStealToast();
 }
 
 function renderStageClass() {
@@ -886,6 +996,8 @@ function render() {
   renderRisk();
   renderResult();
   renderButtons();
+  renderStealToast();
+  renderImpactFx();
 
   els.balance.textContent = money.format(state.balance);
   els.bet.textContent = money.format(state.bet);
