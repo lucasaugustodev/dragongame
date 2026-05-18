@@ -99,7 +99,7 @@ const videoAssets = {
   },
   thiefRobbing: {
     key: "thiefRobbing",
-    src: "assets/videos/robbing_alpha.webm",
+    src: "assets/videos/robbing_alpha.webm?v=2",
     loop: false,
     holdLastFrame: true,
   },
