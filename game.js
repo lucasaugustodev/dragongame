@@ -187,6 +187,7 @@ const thiefVideoPool = {
   pendingKey: null,
   switchToken: 0,
 };
+const preloadedVideos = new Map();
 
 const state = {
   phase: "ready",
@@ -217,6 +218,26 @@ function loadBalance() {
 
 function saveBalance() {
   localStorage.setItem("dragonGameBalance", String(state.balance));
+}
+
+function preloadVideoAsset(asset) {
+  if (!asset || preloadedVideos.has(asset.src)) {
+    return;
+  }
+
+  const video = document.createElement("video");
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.src = asset.src;
+  video.load();
+  preloadedVideos.set(asset.src, video);
+}
+
+function warmupCriticalVideos() {
+  preloadVideoAsset(videoAssets.dragonFiringNow);
+  preloadVideoAsset(videoAssets.thiefCatchingFire);
+  preloadVideoAsset(videoAssets.thiefCashout);
 }
 
 function createRiskSegments() {
@@ -905,6 +926,7 @@ els.resetButton.addEventListener("click", resetBalance);
 });
 
 createRiskSegments();
+warmupCriticalVideos();
 clampBetToBalance();
 render();
 
