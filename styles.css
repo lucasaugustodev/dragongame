@@ -126,6 +126,8 @@ button {
   overflow: hidden;
   border: 1px solid rgba(247, 194, 79, 0.28);
   background-image:
+    radial-gradient(ellipse 48% 30% at 25% 76%, rgba(5, 4, 3, 1) 0%, rgba(6, 5, 3, 0.96) 46%, rgba(7, 5, 3, 0.66) 70%, transparent 94%),
+    radial-gradient(ellipse 42% 28% at 43% 75%, rgba(5, 4, 3, 0.98) 0%, rgba(7, 5, 3, 0.9) 44%, rgba(7, 5, 3, 0.46) 68%, transparent 90%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.66)),
     url("assets/processed/cave-background.png");
   background-size: cover;

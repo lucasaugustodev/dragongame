@@ -105,7 +105,7 @@ const videoAssets = {
   },
   thiefCashout: {
     key: "thiefCashout",
-    src: "assets/videos/cashout_alpha.webm",
+    src: "assets/videos/cashout_alpha.webm?v=2",
     loop: false,
     holdLastFrame: true,
   },
