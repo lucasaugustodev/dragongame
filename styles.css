@@ -1476,10 +1476,10 @@ button {
 .stage.caught .dragon-video,
 .stage.result-cashout .dragon-video,
 .stage.result-loss .dragon-video {
-  left: -5%;
+  left: 18%;
   right: auto;
-  bottom: 49%;
-  width: min(92%, 705px);
+  bottom: 47%;
+  width: min(106%, 705px);
   transform: none;
 }
 
@@ -1498,16 +1498,16 @@ button {
 
 .stage.ready .dragon-video,
 .stage.stealing .dragon-video {
-  left: 8%;
-  bottom: 44%;
-  width: min(55%, 705px);
+  left: 31%;
+  bottom: 42%;
+  width: min(63.37%, 705px);
 }
 
 .stage .dragon-video.is-dragon-sleep {
-  left: 8%;
+  left: 31%;
   right: auto;
-  bottom: 44%;
-  width: min(55%, 705px);
+  bottom: 42%;
+  width: min(63.37%, 705px);
   transform: none;
 }
 
