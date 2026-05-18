@@ -829,6 +829,7 @@ function renderStageClass() {
   if (state.phase === "firing") className += " firing";
   if (state.phase === "caught") className += " caught";
   if (state.phase === "result") className += ` result-${state.resultKind}`;
+  if (state.fireImpact) className += " fire-impact";
   els.stage.className = className;
 }
 
