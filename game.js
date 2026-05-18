@@ -598,6 +598,8 @@ function configureVideoElement(video, config, resetTime = true) {
   video.dataset.autoplay = String(config.autoplay !== false);
   video.loop = config.loop;
   video.classList.toggle("is-dragon-sleep", config.key === "dragonSleep");
+  video.classList.toggle("is-dragon-firing", config.key === "dragonFiringNow");
+  video.classList.toggle("is-thief-burning", config.key === "thiefCatchingFire");
 
   if (srcChanged) {
     video.src = config.src;
