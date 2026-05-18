@@ -833,9 +833,9 @@ function renderResult() {
   }
 
   const titles = {
-    win: "3A. Fugiu com sucesso!",
+    win: "Fugiu com sucesso!",
     cashout: "Cash out feito!",
-    loss: "3B. O dragao te pegou!",
+    loss: "O dragao te pegou!",
   };
 
   els.resultTitle.textContent = titles[state.resultKind] || "Resultado";
