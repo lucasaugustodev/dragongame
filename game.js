@@ -160,6 +160,7 @@ const els = {
   dragonSprite: document.getElementById("dragonSprite"),
   thiefSprite: document.getElementById("thiefSprite"),
   stealPopup: document.getElementById("stealPopup"),
+  dragonPopup: document.getElementById("dragonPopup"),
   fireballFxVideo: document.getElementById("fireballFxVideo"),
   fireDebrisFxVideo: document.getElementById("fireDebrisFxVideo"),
   resultPanel: document.getElementById("resultPanel"),
@@ -179,7 +180,9 @@ let animationTick = 0;
 let sequenceTimerId = null;
 let fireImpactTimerId = null;
 let stealToastTimerId = null;
+let dragonToastTimerId = null;
 let renderedStealToastId = 0;
+let renderedDragonToastId = 0;
 let renderedFireImpactFx = false;
 const dragonVideoPool = {
   active: els.dragonVideo,
@@ -212,6 +215,8 @@ const state = {
   stealToastId: 0,
   stealToastText: "",
   pendingStealToastText: "",
+  dragonToastId: 0,
+  dragonToastText: "",
   status: "Escolha uma aposta e inicie o roubo.",
 };
 
@@ -287,6 +292,11 @@ function revealQueuedStealToast() {
   state.stealToastId += 1;
   state.stealToastText = state.pendingStealToastText;
   state.pendingStealToastText = "";
+}
+
+function showDragonToast() {
+  state.dragonToastId += 1;
+  state.dragonToastText = "IIHHH DEU RUIM VOCÊ ACORDOU O DRAGÃO";
 }
 
 function startRound() {
@@ -383,6 +393,7 @@ function wakeDragon() {
   state.correctPath = null;
   state.fireImpact = false;
   state.stealActionLocked = false;
+  showDragonToast();
   state.status = "O dragao acordou antes do cashout. Voce perdeu o ouro.";
   fireImpactTimerId = window.setTimeout(showFireImpact, 6100);
   sequenceTimerId = window.setTimeout(finishLossFromDragon, 11200);
@@ -474,6 +485,7 @@ function playAgain() {
   state.stealActionLocked = false;
   state.stealToastText = "";
   state.pendingStealToastText = "";
+  state.dragonToastText = "";
   state.status = state.balance > 0
     ? "Escolha uma aposta e inicie o roubo."
     : "Saldo zerado. Resete o saldo para jogar novamente.";
@@ -881,6 +893,46 @@ function renderStealToast() {
   }
 }
 
+function renderDragonToast() {
+  const visible = state.phase === "firing" && Boolean(state.dragonToastText);
+  els.dragonPopup.hidden = !visible;
+
+  if (!visible) {
+    if (dragonToastTimerId) {
+      window.clearTimeout(dragonToastTimerId);
+      dragonToastTimerId = null;
+    }
+    els.dragonPopup.classList.remove("is-visible");
+    renderedDragonToastId = state.dragonToastId;
+    return;
+  }
+
+  els.dragonPopup.textContent = state.dragonToastText;
+
+  if (renderedDragonToastId !== state.dragonToastId) {
+    els.dragonPopup.classList.remove("is-visible");
+    void els.dragonPopup.offsetWidth;
+    els.dragonPopup.classList.add("is-visible");
+    renderedDragonToastId = state.dragonToastId;
+
+    if (dragonToastTimerId) {
+      window.clearTimeout(dragonToastTimerId);
+    }
+
+    const toastId = state.dragonToastId;
+    dragonToastTimerId = window.setTimeout(() => {
+      if (toastId !== state.dragonToastId) {
+        return;
+      }
+
+      state.dragonToastText = "";
+      els.dragonPopup.hidden = true;
+      els.dragonPopup.classList.remove("is-visible");
+      dragonToastTimerId = null;
+    }, 1500);
+  }
+}
+
 function renderImpactFx() {
   const active = state.phase === "firing" && state.fireImpact;
   const videos = [els.fireballFxVideo, els.fireDebrisFxVideo];
@@ -997,6 +1049,7 @@ function render() {
   renderResult();
   renderButtons();
   renderStealToast();
+  renderDragonToast();
   renderImpactFx();
 
   els.balance.textContent = money.format(state.balance);

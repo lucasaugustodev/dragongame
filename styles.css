@@ -302,6 +302,37 @@ button {
   animation: stealPopup 2700ms ease-out both;
 }
 
+.dragon-popup {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  z-index: 7;
+  width: min(620px, calc(100% - 36px));
+  padding: 12px 18px;
+  border: 1px solid rgba(255, 114, 72, 0.78);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(84, 12, 7, 0.95), rgba(24, 8, 5, 0.94));
+  box-shadow:
+    0 0 28px rgba(255, 72, 36, 0.34),
+    inset 0 0 18px rgba(255, 177, 88, 0.12);
+  color: #fff4df;
+  font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.78);
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.dragon-popup.is-visible {
+  animation: dragonWakePopup 1500ms ease-out both;
+}
+
 .fire-screen,
 .thief-burn-effect,
 .coin-rain {
@@ -1011,6 +1042,25 @@ button {
   }
 }
 
+@keyframes dragonWakePopup {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.96);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  68% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -18px) scale(1.02);
+  }
+}
+
 @keyframes coinFall {
   0% {
     opacity: 0;
@@ -1095,6 +1145,10 @@ button {
   .steal-popup {
     left: 52%;
     bottom: 38%;
+  }
+
+  .dragon-popup {
+    top: 14%;
   }
 
   .fireball-fx {
@@ -1645,6 +1699,13 @@ button {
     font-size: 0.72rem;
   }
 
+  .dragon-popup {
+    top: 12%;
+    width: calc(100% - 24px);
+    padding: 9px 10px;
+    font-size: 0.76rem;
+  }
+
   .fireball-fx {
     bottom: 23%;
     width: min(62%, 280px);
@@ -1792,6 +1853,12 @@ button {
     min-width: 140px;
     padding: 7px 9px;
     font-size: 0.66rem;
+  }
+
+  .dragon-popup {
+    top: 10%;
+    padding: 8px 9px;
+    font-size: 0.68rem;
   }
 
   .fireball-fx {
