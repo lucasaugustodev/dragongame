@@ -83,6 +83,7 @@ const videoAssets = {
     src: "assets/videos/dragon_firing_now_alpha.webm",
     loop: false,
     holdLastFrame: true,
+    holdAt: 7.72,
   },
   readyChest: {
     key: "readyChest",
@@ -656,6 +657,13 @@ function configureVideoElement(video, config, resetTime = true) {
   video.dataset.videoKey = config.key;
   video.dataset.videoSrc = config.src;
   video.dataset.autoplay = String(config.autoplay !== false);
+  video.dataset.holdLastFrame = String(Boolean(config.holdLastFrame));
+  video.dataset.holdingLastFrame = "false";
+  video.dataset.holdAt = config.holdAt ? String(config.holdAt) : "";
+  if (video.holdLastFrameTimerId) {
+    window.clearTimeout(video.holdLastFrameTimerId);
+    video.holdLastFrameTimerId = null;
+  }
   video.loop = config.loop;
   video.classList.toggle("is-dragon-sleep", config.key === "dragonSleep");
   video.classList.toggle("is-dragon-firing", config.key === "dragonFiringNow");
@@ -676,10 +684,56 @@ function configureVideoElement(video, config, resetTime = true) {
   }
 }
 
+function freezeVideoLastFrame(video) {
+  if (video.dataset.holdLastFrame !== "true") {
+    return;
+  }
+
+  if (video.holdLastFrameTimerId) {
+    window.clearTimeout(video.holdLastFrameTimerId);
+    video.holdLastFrameTimerId = null;
+  }
+
+  const configuredHoldAt = Number(video.dataset.holdAt);
+  const duration = Number.isFinite(configuredHoldAt) && configuredHoldAt > 0
+    ? configuredHoldAt
+    : Number.isFinite(video.duration) ? video.duration : 0;
+  const holdTime = duration > 0.08 ? duration - 0.04 : duration;
+
+  try {
+    video.pause();
+    if (holdTime > 0) {
+      video.currentTime = holdTime;
+    }
+  } catch {}
+
+  video.dataset.holdingLastFrame = "true";
+}
+
+function scheduleVideoLastFrameHold(video, config) {
+  if (!config.holdLastFrame || !config.holdAt || video.dataset.holdingLastFrame === "true") {
+    return;
+  }
+
+  if (video.holdLastFrameTimerId) {
+    window.clearTimeout(video.holdLastFrameTimerId);
+  }
+
+  const delay = Math.max(0, (config.holdAt - video.currentTime - 0.04) * 1000);
+  video.holdLastFrameTimerId = window.setTimeout(() => {
+    if (video.dataset.videoKey !== config.key) {
+      return;
+    }
+
+    freezeVideoLastFrame(video);
+  }, delay);
+}
+
 function syncVideoPlayback(video, config) {
   video.hidden = false;
   video.loop = config.loop;
   video.dataset.autoplay = String(config.autoplay !== false);
+  video.dataset.holdLastFrame = String(Boolean(config.holdLastFrame));
 
   if (config.autoplay === false) {
     const freeze = () => {
@@ -698,11 +752,12 @@ function syncVideoPlayback(video, config) {
     return;
   }
 
-  if (config.holdLastFrame && video.ended) {
-    video.pause();
+  if (config.holdLastFrame && (video.ended || video.dataset.holdingLastFrame === "true")) {
+    freezeVideoLastFrame(video);
     return;
   }
 
+  scheduleVideoLastFrameHold(video, config);
   video.play().catch(() => {});
 }
 
@@ -750,6 +805,16 @@ function retireBufferedVideo(pool, video, key) {
   }, 520);
 }
 
+function primeDragonAttackStandby() {
+  const standby = dragonVideoPool.standby;
+  if (!standby || standby.dataset.videoKey === videoAssets.dragonFiringNow.key) {
+    return;
+  }
+
+  configureVideoElement(standby, videoAssets.dragonFiringNow);
+  prepareBufferedVideo(standby, videoAssets.dragonFiringNow);
+}
+
 function activateBufferedVideo(pool, incoming, outgoing, config, token) {
   if (token !== pool.switchToken) {
     return;
@@ -765,6 +830,10 @@ function activateBufferedVideo(pool, incoming, outgoing, config, token) {
   pool.active = incoming;
   pool.standby = outgoing;
   retireBufferedVideo(pool, outgoing, outgoingKey);
+
+  if (pool === dragonVideoPool && config.key === videoAssets.dragonSleep.key) {
+    primeDragonAttackStandby();
+  }
 }
 
 function setBufferedActorVideo(pool, config) {
@@ -804,13 +873,35 @@ function setBufferedActorVideo(pool, config) {
   configureVideoElement(incoming, config);
   prepareBufferedVideo(incoming, config);
 
-  const activate = () => activateBufferedVideo(pool, incoming, outgoing, config, token);
+  let activated = false;
+  const activate = () => {
+    if (activated) {
+      return;
+    }
+
+    activated = true;
+    activateBufferedVideo(pool, incoming, outgoing, config, token);
+  };
+
+  const activateWhenReady = () => {
+    if (activated || token !== pool.switchToken) {
+      return;
+    }
+
+    if (incoming.readyState >= 2) {
+      activate();
+      return;
+    }
+
+    window.setTimeout(activateWhenReady, 80);
+  };
 
   if (incoming.readyState >= 2) {
     window.requestAnimationFrame(activate);
   } else {
     incoming.addEventListener("loadeddata", activate, { once: true });
     incoming.addEventListener("canplay", activate, { once: true });
+    window.setTimeout(activateWhenReady, 180);
   }
 
   return true;
@@ -949,7 +1040,8 @@ function renderDragonToast() {
 }
 
 function renderImpactFx() {
-  const active = state.phase === "firing" && state.fireImpact;
+  const keepLossImpact = state.phase === "result" && state.resultKind === "loss" && state.fireImpact;
+  const active = state.fireImpact && (state.phase === "firing" || keepLossImpact);
   const videos = [els.fireballFxVideo, els.fireDebrisFxVideo];
 
   videos.forEach((video) => {
@@ -966,6 +1058,12 @@ function renderImpactFx() {
 
   if (!active) {
     renderedFireImpactFx = false;
+    return;
+  }
+
+  if (keepLossImpact) {
+    videos.forEach((video) => video.pause());
+    renderedFireImpactFx = true;
     return;
   }
 
@@ -1084,6 +1182,16 @@ els.resetButton.addEventListener("click", resetBalance);
 els.preGamePlay.addEventListener("click", enterGame);
 [els.dragonVideo, els.dragonVideoBuffer, els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {
   video.addEventListener("canplay", () => {
+    if (!video.classList.contains("is-active")) {
+      video.pause();
+      return;
+    }
+
+    if (video.dataset.holdingLastFrame === "true") {
+      video.pause();
+      return;
+    }
+
     if (video.dataset.autoplay === "false") {
       video.pause();
       return;
@@ -1091,6 +1199,22 @@ els.preGamePlay.addEventListener("click", enterGame);
 
     video.play().catch(() => {});
   });
+});
+
+[els.dragonVideo, els.dragonVideoBuffer].forEach((video) => {
+  video.addEventListener("timeupdate", () => {
+    const holdAt = Number(video.dataset.holdAt);
+    if (
+      video.dataset.holdLastFrame === "true"
+      && video.dataset.holdingLastFrame !== "true"
+      && Number.isFinite(holdAt)
+      && video.currentTime >= holdAt - 0.16
+    ) {
+      freezeVideoLastFrame(video);
+    }
+  });
+
+  video.addEventListener("ended", () => freezeVideoLastFrame(video));
 });
 
 [els.thiefVideo, els.thiefVideoBuffer].forEach((video) => {

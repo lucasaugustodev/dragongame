@@ -2089,16 +2089,16 @@ button {
 
 .stage.ready .dragon-video,
 .stage.stealing .dragon-video {
-  left: 31%;
+  left: 45%;
   bottom: 42%;
-  width: min(63.37%, 705px);
+  width: min(52.7%, 705px);
 }
 
 .stage .dragon-video.is-dragon-sleep {
-  left: 31%;
+  left: 45%;
   right: auto;
   bottom: 42%;
-  width: min(63.37%, 705px);
+  width: min(52.7%, 705px);
   transform: none;
 }
 
