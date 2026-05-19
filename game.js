@@ -83,7 +83,7 @@ const videoAssets = {
     src: "assets/videos/dragon_firing_now_alpha.webm",
     loop: false,
     holdLastFrame: true,
-    holdAt: 7.72,
+    holdAt: 7.733,
   },
   readyChest: {
     key: "readyChest",
@@ -695,10 +695,9 @@ function freezeVideoLastFrame(video) {
   }
 
   const configuredHoldAt = Number(video.dataset.holdAt);
-  const duration = Number.isFinite(configuredHoldAt) && configuredHoldAt > 0
+  const holdTime = Number.isFinite(configuredHoldAt) && configuredHoldAt > 0
     ? configuredHoldAt
-    : Number.isFinite(video.duration) ? video.duration : 0;
-  const holdTime = duration > 0.08 ? duration - 0.04 : duration;
+    : Number.isFinite(video.duration) && video.duration > 0.08 ? video.duration - 0.04 : 0;
 
   try {
     video.pause();
@@ -719,7 +718,7 @@ function scheduleVideoLastFrameHold(video, config) {
     window.clearTimeout(video.holdLastFrameTimerId);
   }
 
-  const delay = Math.max(0, (config.holdAt - video.currentTime - 0.04) * 1000);
+  const delay = Math.max(0, (config.holdAt - video.currentTime - 0.02) * 1000);
   video.holdLastFrameTimerId = window.setTimeout(() => {
     if (video.dataset.videoKey !== config.key) {
       return;
@@ -1208,7 +1207,7 @@ els.preGamePlay.addEventListener("click", enterGame);
       video.dataset.holdLastFrame === "true"
       && video.dataset.holdingLastFrame !== "true"
       && Number.isFinite(holdAt)
-      && video.currentTime >= holdAt - 0.16
+      && video.currentTime >= holdAt - 0.08
     ) {
       freezeVideoLastFrame(video);
     }
